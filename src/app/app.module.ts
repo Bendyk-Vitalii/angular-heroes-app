@@ -12,6 +12,8 @@ import {environment} from "../environments/environment";
 import {AuthService} from "./shared/services/auth.service";
 import {AuthGuard} from "./shared/services/auth.guard";
 import {RouterModule} from "@angular/router";
+import { RegistrationComponent } from './pages/registration/registration.component';
+
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -23,7 +25,8 @@ const INTERCEPTOR_PROVIDER: Provider = {
   declarations: [
     AppComponent,
     LoginPageComponent,
-    HomepageComponent
+    HomepageComponent,
+    RegistrationComponent
   ],
   imports: [
     BrowserModule,

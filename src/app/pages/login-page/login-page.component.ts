@@ -41,12 +41,14 @@ export class LoginPageComponent implements OnInit {
     });
   }
 
-  submit() {
- this.form.valueChanges.subscribe(e => console.dir(e))
+  submit():any {
     if (this.form.invalid) {
       return;
     }
-
+    const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
+    if (new Date() < expDate) {
+     return this.router.navigate(['/homepage']);
+    }
     this.submitted = true;
 
     const user: User = {
