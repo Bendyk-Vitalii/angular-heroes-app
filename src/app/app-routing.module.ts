@@ -4,6 +4,7 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './shared/services/auth.guard';
+import { PageNotFoundComponent } from './pages/pagenotfound/page-not-found.component';
 
 const routes: Routes = [
   {
@@ -23,8 +24,9 @@ const routes: Routes = [
     path: 'homepage',
     component: HomepageComponent,
     canActivate: [AuthGuard],
-
-  }
+  },
+  { path: '**', pathMatch: 'full',
+        component: PageNotFoundComponent },
 ];
 
 @NgModule({

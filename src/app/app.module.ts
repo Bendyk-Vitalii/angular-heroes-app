@@ -13,6 +13,8 @@ import {AuthService} from "./shared/services/auth.service";
 import {AuthGuard} from "./shared/services/auth.guard";
 import {RouterModule} from "@angular/router";
 import { RegistrationComponent } from './pages/registration/registration.component';
+import { HeroSelectionPageComponent } from './pages/hero-selection-page/hero-selection-page.component';
+import { PageNotFoundComponent } from './pages/pagenotfound/page-not-found.component';
 
 
 const INTERCEPTOR_PROVIDER: Provider = {
@@ -26,7 +28,9 @@ const INTERCEPTOR_PROVIDER: Provider = {
     AppComponent,
     LoginPageComponent,
     HomepageComponent,
-    RegistrationComponent
+    RegistrationComponent,
+    HeroSelectionPageComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
