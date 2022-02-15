@@ -1,16 +1,16 @@
-import {ActivatedRoute, Router, Params} from '@angular/router';
-import {AuthService} from '../../shared/services/auth.service';
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {User} from '../../shared/interfaces';
+import { ActivatedRoute, Router, Params } from '@angular/router';
+import { AuthService } from '../../shared/services/auth.service';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { User } from '../../shared/interfaces';
 
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
 })
-export class LoginPageComponent implements OnInit {
 
+export class LoginPageComponent implements OnInit {
   form!: FormGroup;
   submitted: boolean = false;
   message: string | undefined;
@@ -19,8 +19,7 @@ export class LoginPageComponent implements OnInit {
     public auth: AuthService,
     private router: Router,
     private route: ActivatedRoute
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((params: Params) => {
@@ -35,15 +34,15 @@ export class LoginPageComponent implements OnInit {
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
-        // Validators.pattern('[a-zA-Z]*'),
-        Validators.minLength(5)
-        // Validators.pattern(/^[0-9]+(!@#$%^&*)/)
+        Validators.pattern(
+          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
+        ),
       ]),
     });
-
   }
 
   submit() {
+ this.form.valueChanges.subscribe(e => console.dir(e))
     if (this.form.invalid) {
       return;
     }
