@@ -62,9 +62,6 @@ export class LoginPageComponent implements OnInit {
         this.form.reset();
         this.router.navigate(['/homepage']);
         this.submitted = false;
-      },
-      () => {
-        this.submitted = false;
       }
     );
   }

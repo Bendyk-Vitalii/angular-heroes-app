@@ -5,6 +5,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap, throwError, Subject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({ providedIn: 'root' })
 
@@ -35,6 +36,39 @@ export class AuthService {
         user
       )
       .pipe(tap(this.setToken), catchError(this.handleError.bind(this)));
+  }
+
+
+  register(form: FormGroup, user: User, submitted: boolean = false): void {
+
+    const expDate = new Date(new Date().getTime() + 25000);
+
+    const allCapsAlpha = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+    const allLowerAlpha = [...'abcdefghijklmnopqrstuvwxyz'];
+    const allUniqueChars = [..."~!@#$%^&*()_+-=[]{}|;:'"];
+    const allNumbers = [...'0123456789'];
+
+    const base = [
+      ...allCapsAlpha,
+      ...allNumbers,
+      ...allLowerAlpha,
+      ...allUniqueChars,
+    ];
+
+    submitted = true;
+
+    const tokenGenerator = (base: string[], len: number) => {
+      return [...Array(len)]
+        .map((i) => base[(Math.random() * base.length) | 0])
+        .join('');
+    };
+
+    localStorage.setItem('fb-token', tokenGenerator(base, 12));
+    localStorage.setItem('fb-token-exp', expDate.toString());
+    localStorage.setItem('user-data', JSON.stringify(user))
+    form.reset();
+    this.router.navigate(['/homepage']);
+    submitted = false;
   }
 
   logout() {
