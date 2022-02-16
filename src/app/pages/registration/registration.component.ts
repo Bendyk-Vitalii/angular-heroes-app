@@ -14,13 +14,12 @@ export class RegistrationComponent implements OnInit {
   submitted: boolean = false;
   message: string | undefined;
 
-  constructor(
-    public auth: AuthService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor(public auth: AuthService, private route: ActivatedRoute) {}
+
+
 
   ngOnInit() {
+
     this.route.queryParams.subscribe((params: Params) => {
       if (params['loginAgain']) {
         this.message = 'Please, write valid login&password';
@@ -45,13 +44,12 @@ export class RegistrationComponent implements OnInit {
     });
   }
 
-  register() {
+  submit(): any {
+
     if (this.form.invalid) {
       return;
     }
-
-    this.submitted = true;
-
+    
     const user: User = {
       login: this.form.value.login,
       email: this.form.value.email,
@@ -59,31 +57,7 @@ export class RegistrationComponent implements OnInit {
       returnSecureToken: true,
     };
 
-    const expDate = new Date(new Date().getTime() + 25000);
-
-    const allCapsAlpha = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
-    const allLowerAlpha = [...'abcdefghijklmnopqrstuvwxyz'];
-    const allUniqueChars = [..."~!@#$%^&*()_+-=[]{}|;:'"];
-    const allNumbers = [...'0123456789'];
-
-    const base = [
-      ...allCapsAlpha,
-      ...allNumbers,
-      ...allLowerAlpha,
-      ...allUniqueChars,
-    ];
-
-    const generator = (base: string[], len: number) => {
-      return [...Array(len)]
-        .map((i) => base[(Math.random() * base.length) | 0])
-        .join('');
-    };
-
-    localStorage.setItem('fb-token', generator(base, 12));
-    localStorage.setItem('fb-token-exp', expDate.toString());
-
-    this.form.reset();
-    this.router.navigate(['/homepage']);
-    this.submitted = false;
+    this.auth.register(this.form, user, this.submitted);
   }
 }
+

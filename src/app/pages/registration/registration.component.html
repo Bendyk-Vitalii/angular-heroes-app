@@ -1,5 +1,5 @@
 <div class="container">
-  <form class="card" [formGroup]="form" (ngSubmit)="register()">
+  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
     <h2>Join</h2>
 
     <div class="alert alert-danger" *ngIf="auth.error$ | async as error">
@@ -66,6 +66,6 @@
         </small>
       </div>
     </div>
-    <button class="btn btn-primary" (click)="register()">Join Heroes</button>
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Join Heroes</button>
   </form>
 </div>
