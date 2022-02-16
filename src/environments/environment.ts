@@ -5,8 +5,16 @@ import { Environment } from './interface';
 
 export const environment: Environment = {
   production: false,
-  apiKey: "AIzaSyDOqZD1gEuMutWQF9gg3o1V-tuagRIH5UY",
-  fbUrl: "https://angular-heroes-app-6157a-default-rtdb.europe-west1.firebasedatabase.app/"
+  firebase: {
+    apiKey: "AIzaSyDOqZD1gEuMutWQF9gg3o1V-tuagRIH5UY",
+    authDomain: "angular-heroes-app-6157a.firebaseapp.com",
+    databaseURL: "https://angular-heroes-app-6157a-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "angular-heroes-app-6157a",
+    storageBucket: "angular-heroes-app-6157a.appspot.com",
+    messagingSenderId: "883310124683",
+    appId: "1:883310124683:web:d0e2e1a5463632f0317e8e"
+  }
+
 };
 
 /*
