@@ -4,14 +4,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, tap, throwError, Subject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 
 export class AuthService {
 
   public error$: Subject<string> = new Subject<string>();
+  Router: any;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router
+    ) {}
 
   get token(): string | null {
     const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
@@ -26,7 +31,7 @@ export class AuthService {
     user.returnSecureToken = true;
     return this.http
       .post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.apiKey}`,
+        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebase.apiKey}`,
         user
       )
       .pipe(tap(this.setToken), catchError(this.handleError.bind(this)));

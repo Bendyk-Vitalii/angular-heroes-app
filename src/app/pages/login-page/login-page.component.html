@@ -1,3 +1,4 @@
+<div class="container">
 <form class="card" [formGroup]="form" (ngSubmit)="submit()">
   <h2>Log in</h2>
 
@@ -56,10 +57,13 @@
       </small>
     </div>
   </div>
+
   <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
     sign in
   </button>
+  <button class="btn btn-primary" routerLink="/registration" [disabled]="!form.invalid">Join</button>
 </form>
 
+</div>
 
 
