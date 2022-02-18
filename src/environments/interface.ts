@@ -9,4 +9,7 @@ export interface Environment {
     messagingSenderId: string,
     appId: string
   }
+  heroes: {
+    searchId: string
+  }
 }

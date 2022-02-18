@@ -13,8 +13,10 @@ export const environment: Environment = {
     storageBucket: "angular-heroes-app-6157a.appspot.com",
     messagingSenderId: "883310124683",
     appId: "1:883310124683:web:d0e2e1a5463632f0317e8e"
+  },
+  heroes: {
+    searchId: "https://superheroapi.com/api.php/1880983215397777/search/id"
   }
-
 };
 
 /*
