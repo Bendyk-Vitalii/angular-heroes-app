@@ -39,7 +39,7 @@ export class RegistrationComponent implements OnInit {
       login: new FormControl('', [
         Validators.minLength(8),
         Validators.required,
-        Validators.pattern(/^[a-z]{1,}([A-Z][a-z]{1,}){1,}$/gm),
+        Validators.pattern(/^[a-z]{1,}([A-Z][a-z]{1,}){1,}$|^[a-z]{1,}(-[a-z]{1,}){1,}$/gm),
       ]),
     });
   }
@@ -49,7 +49,7 @@ export class RegistrationComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-    
+
     const user: User = {
       login: this.form.value.login,
       email: this.form.value.email,

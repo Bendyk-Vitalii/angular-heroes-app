@@ -21,7 +21,7 @@ import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selectio
   HttpClientModule,
   RouterModule.forChild([
     {
-    path: 'homepage',
+    path: '',
     component: HomepageComponent,
     children: [
       {
@@ -33,7 +33,7 @@ import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selectio
   }
   ]),
   ],
-  exports: [RouterModule, HttpClientModule],
+  exports: [RouterModule],
   providers: [AuthGuard],
 })
 export class HomePageModule {}
