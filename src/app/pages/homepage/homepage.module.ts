@@ -1,38 +1,35 @@
 import { HttpClientModule } from '@angular/common/http';
 import { HomepageComponent } from './homepage.component';
-import { RegistrationComponent } from '../registration/registration.component';
-import { LoginPageComponent } from '../login-page/login-page.component';
 import { NgModule } from '@angular/core';
 import { AuthGuard } from 'src/app/shared/services/auth.guard';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selection-page.component';
+import { CheckNullPipe } from '../../shared/services/check-null.pipe';
 
-@NgModule({
-  declarations: [
-    HeroSelectionPageComponent,
-    HomepageComponent
-  ],
- imports: [
-  CommonModule,
-  FormsModule,
-  ReactiveFormsModule,
-  HttpClientModule,
-  RouterModule.forChild([
-    {
+const routes: Routes = [
+  {
     path: '',
-    pathMatch: 'full',
     component: HomepageComponent,
     children: [
       {
         path: 'heroselection',
-      component: HeroSelectionPageComponent,
-      canActivate: [AuthGuard],
-    }
-    ]
-  }
-  ]),
+        component: HeroSelectionPageComponent,
+        canActivateChild: [AuthGuard],
+      },
+    ],
+  },
+];
+
+@NgModule({
+  declarations: [HeroSelectionPageComponent, HomepageComponent, CheckNullPipe],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    RouterModule.forChild(routes),
   ],
   exports: [RouterModule],
   providers: [AuthGuard],

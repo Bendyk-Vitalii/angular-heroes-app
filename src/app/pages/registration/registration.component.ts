@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { User } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
@@ -14,12 +14,13 @@ export class RegistrationComponent implements OnInit {
   submitted: boolean = false;
   message: string | undefined;
 
-  constructor(public auth: AuthService, private route: ActivatedRoute) {}
+  constructor(
+    public authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
-
-
-  ngOnInit() {
-
+  public ngOnInit() {
     this.route.queryParams.subscribe((params: Params) => {
       if (params['loginAgain']) {
         this.message = 'Please, write valid login&password';
@@ -28,24 +29,10 @@ export class RegistrationComponent implements OnInit {
       }
     });
 
-    this.form = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.pattern(
-          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
-        ),
-      ]),
-      login: new FormControl('', [
-        Validators.minLength(8),
-        Validators.required,
-        Validators.pattern(/^[a-z]{1,}([A-Z][a-z]{1,}){1,}$|^[a-z]{1,}(-[a-z]{1,}){1,}$/gm),
-      ]),
-    });
+    this.form = this.authService.registrationFormValidators();
   }
 
-  submit(): any {
-
+  public submit(): any {
     if (this.form.invalid) {
       return;
     }
@@ -56,8 +43,14 @@ export class RegistrationComponent implements OnInit {
       password: this.form.value.password,
       returnSecureToken: true,
     };
+    this.submitted = true;
 
-    this.auth.register(this.form, user, this.submitted);
+    this.authService.register(user);
+
+    this.router.navigate(['/homepage', 'heroselection']);
+
+    this.submitted = false;
+
+    this.form.reset();
   }
 }
-

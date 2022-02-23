@@ -3,8 +3,8 @@
     <a routerLink="/">Heroes app</a>
   </h1>
 
-  <ul *ngIf="auth.isAuthenticated()">
-    <li routerLinkActive="active">
+  <ul>
+    <li>
       <a [routerLink]="['/registration']">Registration</a>
     </li>
     <li>
@@ -13,6 +13,4 @@
   </ul>
 </nav>
 
-<div class="container">
-  <router-outlet></router-outlet>
-</div>
+<router-outlet></router-outlet>

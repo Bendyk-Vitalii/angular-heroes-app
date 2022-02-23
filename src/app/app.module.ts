@@ -1,3 +1,4 @@
+import { AlertService } from './shared/services/alert.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -10,6 +11,11 @@ import { AuthGuard } from './shared/services/auth.guard';
 import { RouterModule } from '@angular/router';
 import { RegistrationComponent } from './pages/registration/registration.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
+import { AlertComponent } from './shared/alert/alert.component';
+import { StoreModule } from '@ngrx/store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [
@@ -17,15 +23,19 @@ import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.com
     LoginPageComponent,
     RegistrationComponent,
     PageNotFoundComponent,
+    AlertComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    StoreModule.forRoot({}, {}),
+    StoreDevtoolsModule.instrument({ maxAge: 25, logOnly: environment.production }),
+    EffectsModule.forRoot([]),
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard],
+  providers: [AuthService, AuthGuard, AlertService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

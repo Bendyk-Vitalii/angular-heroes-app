@@ -1,1 +1,59 @@
-<p>hero-selection-page works!</p>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <h2>Search heroes</h2>
+  <div class="form-group">
+    <div
+      class="form-control btn-input-group"
+      [ngClass]="{
+        invalid:
+          form.get('searchByName')?.touched && form.get('searchByName')?.invalid
+      }"
+    >
+      <input
+        type="text"
+        id="searchByName"
+        formControlName="searchByName"
+        placeholder="searchByName"
+      />
+      <button
+        class="btn"
+        type="submit"
+        id="searchByName"
+        [disabled]="form.get('searchByName')?.status === 'INVALID'"
+        (click)="submit()"
+      >
+        search
+      </button>
+    </div>
+  </div>
+</form>
+
+<div class="container-heroes" *ngIf="heroes.length">
+  <h3 class="title-result">result:{{ heroes.length }}</h3>
+  <div class="container-grid">
+    <ng-container *ngFor="let hero of heroes; trackBy: identify">
+      <div class="hero-cart">
+        <h4>{{ hero.name }}</h4>
+        <img
+          src="{{ hero.image.url }}"
+          onerror="src='https://freepikpsd.com/file/2019/10/image-not-found-png-4-Transparent-Images.png'"
+          alt="{{ hero.name }}-img"
+        />
+        <ul>
+          <li>Combat:{{ hero.powerstats.combat | checkNull }}</li>
+          <li>Durability:{{ hero.powerstats.durability | checkNull }}</li>
+          <li>Intelligence:{{ hero.powerstats.intelligence | checkNull }}</li>
+          <li>Power:{{ hero.powerstats.power | checkNull }}</li>
+          <li>Speed:{{ hero.powerstats.speed | checkNull }}</li>
+          <li>Strength:{{ hero.powerstats.strength | checkNull }}</li>
+        </ul>
+        <button
+          class="btn"
+          (click)="selectHero($event.target)"
+          id="{{ hero.name }}"
+        >
+          select
+        </button>
+      </div>
+    </ng-container>
+  </div>
+</div>

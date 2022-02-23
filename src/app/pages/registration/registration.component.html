@@ -2,7 +2,7 @@
   <form [formGroup]="form" (ngSubmit)="submit()">
     <h2>Join</h2>
 
-    <div class="alert alert-danger" *ngIf="auth.error$ | async as error">
+    <div class="alert alert-danger" *ngIf="authService.error$ | async as error">
       {{ error }}
     </div>
 
@@ -59,8 +59,7 @@
         </small>
         <small
           *ngIf="
-            form.get('password')?.dirty &&
-            form.get('password')?.value.length < 5
+            form.get('password')?.dirty && form.get('password')?.errors
           "
           >Your password must be minimum 6 symbols
         </small>

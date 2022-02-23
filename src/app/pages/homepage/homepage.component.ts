@@ -5,18 +5,17 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 @Component({
   selector: 'app-homepage',
   templateUrl: './homepage.component.html',
-  styleUrls: ['./homepage.component.scss']
+  styleUrls: ['./homepage.component.scss'],
 })
 export class HomepageComponent implements OnInit {
-
   constructor(private router: Router, public auth: AuthService) {}
 
-  ngOnInit(): void {}
+  isAuthenticatedUser = this.auth.isAuthenticated();
+  public ngOnInit(): void {}
 
-  logout(event: Event) {
+  public logout(event: Event) {
     event.preventDefault();
     this.auth.logout();
-    this.router.navigate(['login']);
+    this.router.navigate(['registration']);
   }
-
 }
