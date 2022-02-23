@@ -50,6 +50,7 @@
           class="btn"
           (click)="selectHero($event.target)"
           id="{{ hero.name }}"
+          [disabled]="selected"
         >
           select
         </button>

@@ -1,16 +1,9 @@
-import { environment } from './../../../environments/environment';
 import { User } from './../../shared/interfaces';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, tap, Subject, throwError, catchError } from 'rxjs';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  public error$: Subject<string> = new Subject<string>();
-
-  constructor(private http: HttpClient) {}
-
   get token(): string | null {
     const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
     if (new Date() > expDate) {
@@ -52,17 +45,7 @@ export class AuthService {
     });
   }
 
-  login(user: User): Observable<any> {
-    user.returnSecureToken = true;
-    return this.http
-      .post(
-        `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebase.apiKey}`,
-        user
-      )
-      .pipe(tap(this.setToken), catchError(this.handleError.bind(this)));
-  }
-
-  loginSubmit(form: any, submitted: any, authService: any, router: any) {
+  loginSubmit(form: any, submitted: any, router: any) {
     if (form.invalid) {
       return;
     }
@@ -79,11 +62,9 @@ export class AuthService {
       returnSecureToken: true,
     };
 
-    authService.login(user).subscribe(() => {
-      form.reset();
-      router.navigate(['/homepage']);
-      submitted = false;
-    });
+    form.reset();
+    router.navigate(['/homepage']);
+    submitted = false;
   }
 
   register(user: User): void {
@@ -118,23 +99,6 @@ export class AuthService {
 
   isAuthenticated(): boolean {
     return !!this.token;
-  }
-
-  private handleError(error: HttpErrorResponse) {
-    const { message } = error.error.error;
-
-    switch (message) {
-      case 'INVALID_EMAIL':
-        this.error$.next('Invalid email');
-        break;
-      case 'INVALID_PASSWORD':
-        this.error$.next('Invalid password');
-        break;
-      case 'EMAIL_NOT_FOUND':
-        this.error$.next('This email not found');
-        break;
-    }
-    return throwError(error);
   }
 
   private setToken(response: any) {

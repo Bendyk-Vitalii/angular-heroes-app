@@ -1,22 +1,10 @@
 <div class="container">
-  <div class="alert alert-danger" *ngIf="authService.error$ | async as error">
-    {{ error }}
-  </div>
-
   <div class="alert alert-info" *ngIf="message">
     {{ message }}
   </div>
 
   <form class="card" [formGroup]="form" (ngSubmit)="submit()">
     <h2>Log in</h2>
-
-    <div class="alert alert-danger" *ngIf="authService.error$ | async as error">
-      {{ error }}
-    </div>
-
-    <div class="alert alert-info" *ngIf="message">
-      {{ message }}
-    </div>
 
     <div
       class="form-control"

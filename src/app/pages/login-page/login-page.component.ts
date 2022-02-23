@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router, Params } from '@angular/router';
 import { AuthService } from '../../shared/services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-login-page',
@@ -32,11 +32,6 @@ export class LoginPageComponent implements OnInit {
   }
 
   submit(): any {
-    this.authService.loginSubmit(
-      this.form,
-      this.submitted,
-      this.authService,
-      this.router
-    );
+    this.authService.loginSubmit(this.form, this.submitted, this.router);
   }
 }

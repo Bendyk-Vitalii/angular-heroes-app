@@ -11,24 +11,14 @@ import { Subscription } from 'rxjs';
 })
 export class HeroSelectionPageComponent implements OnInit {
   heroes: Array<Hero> = [];
+  selected = false;
   form!: FormGroup;
   heroesSearchBySub!: Subscription;
 
   constructor(private heroesService: HeroesService) {}
 
   public ngOnInit(): void {
-    this.form = new FormGroup({
-      searchById: new FormControl('', [
-        Validators.pattern('^[0-9]*$'),
-        Validators.minLength(1),
-        Validators.required,
-      ]),
-      searchByName: new FormControl('', [
-        Validators.minLength(1),
-        Validators.required,
-        Validators.pattern(/[^!@#\$%\^&\(\),\.+=\/\{\}?><":;|\d]/),
-      ]),
-    });
+    this.form = this.heroesService.formValidator();
   }
 
   public submit(): void {
@@ -37,12 +27,12 @@ export class HeroSelectionPageComponent implements OnInit {
       .getBy(value)
       .subscribe((heroes) => {
         this.heroes = heroes.results;
-        console.dir(this.heroes);
       });
     this.form.reset();
   }
 
   public selectHero({ id }: any): void {
+    this.selected = true;
     this.heroesService.selectHero(id);
   }
 
@@ -50,7 +40,7 @@ export class HeroSelectionPageComponent implements OnInit {
     return item.name;
   }
 
-  private ngOnDestroy(): void {
+  public ngOnDestroy(): void {
     if (this.heroesSearchBySub) {
       this.heroesSearchBySub.unsubscribe();
     }
