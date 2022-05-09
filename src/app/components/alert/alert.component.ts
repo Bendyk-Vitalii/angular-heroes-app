@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { AlertService } from '../services/alert.service';
+import { AlertService } from '../../shared/services/alert.service';
 
 @Component({
   selector: 'app-alert',
   templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.scss']
+  styleUrls: ['./alert.component.scss'],
 })
 export class AlertComponent implements OnInit {
   @Input() delay = 5000;
@@ -17,7 +17,7 @@ export class AlertComponent implements OnInit {
 
   constructor(private alertService: AlertService) {}
 
- public ngOnInit(): void {
+  public ngOnInit(): void {
     this.alertSub = this.alertService.alert$.subscribe((alert) => {
       this.text = alert.text;
       this.type = alert.type;
@@ -29,10 +29,9 @@ export class AlertComponent implements OnInit {
     });
   }
 
- private ngOnDestroy(): void {
+  private ngOnDestroy(): void {
     if (this.alertSub) {
       this.alertSub.unsubscribe();
     }
   }
-
 }

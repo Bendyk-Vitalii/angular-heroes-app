@@ -8,14 +8,14 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   styleUrls: ['./homepage.component.scss'],
 })
 export class HomepageComponent implements OnInit {
-  constructor(private router: Router, public auth: AuthService) {}
+  constructor(private router: Router, public authService: AuthService) {}
 
-  isAuthenticatedUser = this.auth.isAuthenticated();
+  public isAuthenticatedUser = this.authService.isAuthenticated();
   public ngOnInit(): void {}
 
   public logout(event: Event) {
     event.preventDefault();
-    this.auth.logout();
-    this.router.navigate(['registration']);
+    this.authService.logout();
+    this.router.navigate(['login']);
   }
 }

@@ -1,3 +1,4 @@
+import { ServerResponse } from './../interfaces';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { environment } from './../../../environments/environment';
 import { Observable } from 'rxjs';
@@ -10,7 +11,7 @@ import { Injectable } from '@angular/core';
 export class HeroesService {
   constructor(private http: HttpClient) {}
 
-  getBy(id: string): Observable<any> {
+  getByName(id: string): Observable<ServerResponse> {
     return this.http.get<any>(`${environment.heroes.searchBy}/${id}`);
   }
 

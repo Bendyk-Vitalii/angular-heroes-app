@@ -15,3 +15,8 @@ export interface Hero {
   powerstats: any;
   work: Object;
 }
+
+export interface ServerResponse {
+  response: String;
+  results: Array<Hero>;
+}

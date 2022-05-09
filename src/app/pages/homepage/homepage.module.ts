@@ -1,3 +1,4 @@
+import { InfoPageComponent } from '../info-page/info-page.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HomepageComponent } from './homepage.component';
 import { NgModule } from '@angular/core';
@@ -6,7 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selection-page.component';
-import { CheckNullPipe } from '../../shared/services/check-null.pipe';
+import { CheckNullPipe } from '../../shared/pipes/check-null.pipe';
 
 const routes: Routes = [
   {
@@ -16,6 +17,11 @@ const routes: Routes = [
       {
         path: 'heroselection',
         component: HeroSelectionPageComponent,
+        canActivateChild: [AuthGuard],
+      },
+      {
+        path: 'info',
+        component: InfoPageComponent,
         canActivateChild: [AuthGuard],
       },
     ],

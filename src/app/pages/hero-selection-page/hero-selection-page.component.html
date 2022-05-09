@@ -10,7 +10,6 @@
     >
       <input
         type="text"
-        id="searchByName"
         formControlName="searchByName"
         placeholder="searchByName"
       />
@@ -26,20 +25,17 @@
     </div>
   </div>
 </form>
-
-<div class="search-alphabet">
+<div class="search-alphabet" *ngIf="alphabetGeneratorResult | async as letters">
   <button
     class="btn"
-    *ngFor="let letter of alphabetGenerator()"
-    (click)="alphabetButtonHandler($event.target)"
+    *ngFor="let letter of letters"
+    (click)="alphabetButtonHandler($event)"
   >
     {{ letter }}
   </button>
 </div>
 
-<ng-container *ngIf="loading">
-  <div class="loader"></div>
-</ng-container>
+<ng-container *ngIf="loading"> <div class="loader"></div> </ng-container>
 
 <div class="container-heroes" *ngIf="!loading">
   <h3 class="title-result">result:{{ heroes.length }}</h3>
@@ -49,7 +45,7 @@
         <h4>{{ hero.name }}</h4>
         <img
           src="{{ hero.image.url }}"
-          onerror="src='https://freepikpsd.com/file/2019/10/image-not-found-png-4-Transparent-Images.png'"
+          onerror="src={ imgNotFoundLink }"
           alt="{{ hero.name }}-img"
         />
         <ul>
@@ -62,7 +58,7 @@
         </ul>
         <button
           class="btn"
-          (click)="selectHero($event.target)"
+          (click)="addToFavoriteHero($event)"
           id="{{ hero.name }}"
         >
           select

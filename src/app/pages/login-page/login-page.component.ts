@@ -1,7 +1,9 @@
-import { ActivatedRoute, Router, Params } from '@angular/router';
-import { AuthService } from '../../shared/services/auth.service';
-import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
+// import { appFormValidator } from 'src/app/shared/custom-validators.directive';
 
 @Component({
   selector: 'app-login-page',
@@ -10,28 +12,38 @@ import { FormGroup } from '@angular/forms';
 })
 export class LoginPageComponent implements OnInit {
   form!: FormGroup;
-  submitted = false;
-  message: string | undefined;
+  message!: string;
 
-  constructor(
-    public authService: AuthService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  public ngOnInit() {
-    this.route.queryParams.subscribe((params: Params) => {
-      if (params['loginAgain']) {
-        this.message = 'Please, write login & password';
-      } else if (params['authFailed']) {
-        this.message = 'Please, write login & password again';
-      }
+  public ngOnInit(): void {
+    this.form = new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(6),
+        forbiddenValueValidator(
+          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
+        ),
+      ]),
     });
-
-    this.form = this.authService.loginFormValidators();
   }
 
-  submit(): any {
-    this.authService.loginSubmit(this.form, this.submitted, this.router);
+  get email() {
+    return this.form.get('email')!;
+  }
+
+  get password() {
+    return this.form.get('password')!;
+  }
+
+  public submit(): void {
+    this.authService.loginSubmit(
+      this.form.value.email,
+      this.form.value.password,
+      this.router
+    );
+    this.message = 'Please, write login & password again';
+    this.form.reset();
   }
 }

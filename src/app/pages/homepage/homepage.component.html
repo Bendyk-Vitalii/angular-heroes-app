@@ -8,7 +8,10 @@
       <a [routerLink]="['/registration']">Registration</a>
     </li>
     <li>
-      <a href="#" (click)="logout($event)">log out</a>
+      <a (click)="logout($event)">log out</a>
+    </li>
+    <li>
+      <a [routerLink]="['info']"> Info Page </a>
     </li>
   </ul>
 </nav>

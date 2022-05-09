@@ -154,9 +154,10 @@ img {
 
 .alert {
   padding: 0.7rem;
-  margin: 1rem 0;
+  text-align: center;
   opacity: 0.9;
-  background: var(--light-color);
+  background: var(--danger-color);
+  border-radius: 5px;
   color: #333;
 }
 

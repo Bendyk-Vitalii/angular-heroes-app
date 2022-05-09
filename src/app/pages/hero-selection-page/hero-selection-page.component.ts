@@ -1,8 +1,10 @@
+import { map } from 'rxjs/operators';
 import { Hero } from './../../shared/interfaces';
 import { HeroesService } from './../../shared/services/heroes.service';
-import { FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { pipe, Subscription, switchMap, tap, Observable } from 'rxjs';
+import { ImgNotFoundLink } from 'src/app/shared/constants';
 
 @Component({
   selector: 'app-hero-selection-page',
@@ -13,65 +15,52 @@ export class HeroSelectionPageComponent implements OnInit {
   heroes: Array<Hero> = [];
   loading: boolean = false;
   form!: FormGroup;
-  heroesSearchBySub!: Subscription;
+  imgNotFoundLink: String = ImgNotFoundLink;
+  alphabetGeneratorResult: Observable<string[]> | undefined;
 
   constructor(private heroesService: HeroesService) {}
 
   public ngOnInit(): void {
     this.form = this.heroesService.formValidator();
-
-    this.alphabetGenerator();
-    this.loading = true;
-    this.heroesSearchBySub = this.heroesService
-      .getBy('a')
-      .subscribe((heroes) => {
-        this.heroes = heroes.results;
-        this.loading = false;
-      });
+    this.alphabetGeneratorResult = this.alphabetGenerator();
+    this.fetchHeroes();
   }
 
-  public alphabetGenerator(): Array<string> {
-    let letters = [];
+  public fetchHeroes(getBy = 'a'): void {
+    this.loading = true;
+    this.heroesService
+      .getByName(getBy)
+      .subscribe(({ results }) => (this.heroes = results));
+    this.loading = false;
+  }
+
+  public alphabetGenerator(): Observable<Array<string>> {
+    let letters: Array<string> = [];
     for (let i = 65; i <= 90; i++) {
       letters.push(String.fromCharCode(i));
     }
-    return letters;
+    return Observable.create((observer: { next: (arg0: string[]) => Number }) =>
+      observer.next(letters)
+    );
   }
 
   public submit(): void {
-    this.loading = true;
     const { value }: any = this.form.get('searchByName');
-    this.heroesSearchBySub = this.heroesService
-      .getBy(value)
-      .subscribe((heroes) => {
-        this.heroes = heroes.results;
-        this.loading = false;
-      });
+    this.fetchHeroes(value);
     this.form.reset();
   }
 
-  public selectHero(t: any): void {
-    t.disabled = true;
+  public addToFavoriteHero(event: Event): void {
+    const e = event.target as HTMLInputElement;
+    e.disabled = true;
   }
 
-  public identify(index: any, item: any): any {
-    return item.name;
+  public identify(item: Number): Number {
+    return item;
   }
 
-  public alphabetButtonHandler({ innerHTML }: any): any {
-    this.loading = true;
-
-    this.heroesSearchBySub = this.heroesService
-      .getBy(innerHTML)
-      .subscribe((heroes) => {
-        this.heroes = heroes.results;
-        this.loading = false;
-      });
-  }
-
-  public ngOnDestroy(): void {
-    if (this.heroesSearchBySub) {
-      this.heroesSearchBySub.unsubscribe();
-    }
+  public alphabetButtonHandler(event: Event): void {
+    const e = event.target as HTMLElement;
+    this.fetchHeroes(e.innerHTML);
   }
 }

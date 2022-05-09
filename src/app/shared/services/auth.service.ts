@@ -1,6 +1,7 @@
+import { Router, Routes } from '@angular/router';
 import { User } from './../../shared/interfaces';
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,58 +14,18 @@ export class AuthService {
     return localStorage.getItem('fb-token');
   }
 
-  loginFormValidators(): FormGroup {
-    return new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.pattern(
-          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
-        ),
-      ]),
-    });
-  }
-
-  registrationFormValidators(): FormGroup {
-    return new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [
-        Validators.minLength(5),
-        Validators.required,
-        Validators.pattern(
-          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
-        ),
-      ]),
-      login: new FormControl('', [
-        Validators.minLength(8),
-        Validators.required,
-        Validators.pattern(
-          /^[a-z]{1,}([A-Z][a-z]{1,}){1,}$|^[a-z]{1,}(-[a-z]{1,}){1,}$/gm
-        ),
-      ]),
-    });
-  }
-
-  loginSubmit(form: any, submitted: any, router: any) {
-    if (form.invalid) {
-      return;
-    }
+  loginSubmit(
+    email: String,
+    password: String,
+    router: Router
+  ): void | Promise<boolean> {
+    const userInfo = JSON.parse(localStorage.getItem('user-data') as string);
     const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
-    const expression = new Date() < expDate;
+    const expression =
+      userInfo.email === email && userInfo.password === password;
     if (expression) {
-      return router.navigate(['/homepage/heroselection']);
+      return router.navigate(['/homepage', 'heroselection']);
     }
-    submitted = true;
-
-    const user: User = {
-      email: form.value.email,
-      password: form.value.password,
-      returnSecureToken: true,
-    };
-
-    form.reset();
-    router.navigate(['/homepage']);
-    submitted = false;
   }
 
   register(user: User): void {
@@ -84,7 +45,7 @@ export class AuthService {
 
     const tokenGenerator = (base: string[], len: number) => {
       return [...Array(len)]
-        .map((i) => base[(Math.random() * base.length) | 0])
+        .map(() => base[(Math.random() * base.length) | 0])
         .join('');
     };
 
@@ -93,23 +54,23 @@ export class AuthService {
     localStorage.setItem('user-data', JSON.stringify(user));
   }
 
-  logout() {
-    this.setToken(null);
+  logout(): void {
+    return;
   }
 
   isAuthenticated(): boolean {
     return !!this.token;
   }
 
-  private setToken(response: any) {
-    if (response) {
-      const expDate = new Date(
-        new Date().getTime() + +response.expiresIn * 1000
-      );
-      localStorage.setItem('fb-token', response.idToken);
-      localStorage.setItem('fb-token-exp', expDate.toString());
-    } else {
-      localStorage.clear();
-    }
-  }
+  // private setToken(response: any) {
+  //   if (response) {
+  //     const expDate = new Date(
+  //       new Date().getTime() + +response.expiresIn * 1000
+  //     );
+  //     localStorage.setItem('fb-token', response.idToken);
+  //     localStorage.setItem('fb-token-exp', expDate.toString());
+  //   } else {
+  //     localStorage.clear();
+  //   }
+  // }
 }
