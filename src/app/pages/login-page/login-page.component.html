@@ -19,7 +19,7 @@
 
       <div class="validation">
         <small
-          *ngIf="email?.errors?.['required'] && (form.touched || form.dirty)"
+          *ngIf="email?.errors?.['required'] || email.status !== 'INVALID'"
         >
           invalid email
         </small>

@@ -12,6 +12,7 @@ export class HeroesService {
   constructor(private http: HttpClient) {}
 
   getByName(id: string): Observable<ServerResponse> {
+    console.log(this.http.get<any>(`${environment.heroes.searchBy}/${id}`));
     return this.http.get<any>(`${environment.heroes.searchBy}/${id}`);
   }
 

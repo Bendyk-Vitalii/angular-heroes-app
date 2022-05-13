@@ -1,3 +1,4 @@
+import { CONSTANTS } from './../../shared/constants';
 import { InfoPageComponent } from '../info-page/info-page.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HomepageComponent } from './homepage.component';
@@ -8,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selection-page.component';
 import { CheckNullPipe } from '../../shared/pipes/check-null.pipe';
+import { ImgNotFoundLink } from 'src/app/shared/constants';
 
 const routes: Routes = [
   {
@@ -38,6 +40,12 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
   exports: [RouterModule],
-  providers: [AuthGuard],
+  providers: [
+    AuthGuard,
+    {
+      provide: CONSTANTS,
+      useValue: { ImgNotFoundLink },
+    },
+  ],
 })
 export class HomePageModule {}

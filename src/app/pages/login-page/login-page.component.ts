@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
 // import { appFormValidator } from 'src/app/shared/custom-validators.directive';
@@ -9,6 +9,7 @@ import { forbiddenValueValidator } from 'src/app/shared/custom-validators.direct
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent implements OnInit {
   form!: FormGroup;

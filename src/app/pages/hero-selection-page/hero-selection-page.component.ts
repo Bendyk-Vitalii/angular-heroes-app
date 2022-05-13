@@ -1,37 +1,41 @@
-import { map } from 'rxjs/operators';
-import { Hero } from './../../shared/interfaces';
-import { HeroesService } from './../../shared/services/heroes.service';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
-import { pipe, Subscription, switchMap, tap, Observable } from 'rxjs';
 import { ImgNotFoundLink } from 'src/app/shared/constants';
+import { Hero, ServerResponse } from './../../shared/interfaces';
+import { HeroesService } from './../../shared/services/heroes.service';
+import { FormGroup } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnInit,
+  TemplateRef,
+} from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-hero-selection-page',
   templateUrl: './hero-selection-page.component.html',
   styleUrls: ['./hero-selection-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSelectionPageComponent implements OnInit {
   heroes: Array<Hero> = [];
-  loading: boolean = false;
+  loader!: TemplateRef<any>;
   form!: FormGroup;
-  imgNotFoundLink: String = ImgNotFoundLink;
+  imgNotFoundLink!: String;
   alphabetGeneratorResult: Observable<string[]> | undefined;
+  fetchHeroes$!: Observable<any>;
 
   constructor(private heroesService: HeroesService) {}
 
   public ngOnInit(): void {
     this.form = this.heroesService.formValidator();
     this.alphabetGeneratorResult = this.alphabetGenerator();
-    this.fetchHeroes();
+    this.imgNotFoundLink = ImgNotFoundLink;
+    this.fetchHeroes$ = this.fetchHeroes();
   }
 
-  public fetchHeroes(getBy = 'a'): void {
-    this.loading = true;
-    this.heroesService
-      .getByName(getBy)
-      .subscribe(({ results }) => (this.heroes = results));
-    this.loading = false;
+  public fetchHeroes(getBy = 'a'): Observable<ServerResponse> {
+    return this.heroesService.getByName(getBy);
   }
 
   public alphabetGenerator(): Observable<Array<string>> {
@@ -46,8 +50,7 @@ export class HeroSelectionPageComponent implements OnInit {
 
   public submit(): void {
     const { value }: any = this.form.get('searchByName');
-    this.fetchHeroes(value);
-    this.form.reset();
+    this.fetchHeroes$ = this.fetchHeroes(value);
   }
 
   public addToFavoriteHero(event: Event): void {
@@ -61,6 +64,6 @@ export class HeroSelectionPageComponent implements OnInit {
 
   public alphabetButtonHandler(event: Event): void {
     const e = event.target as HTMLElement;
-    this.fetchHeroes(e.innerHTML);
+    this.fetchHeroes$ = this.fetchHeroes(e.innerHTML);
   }
 }
