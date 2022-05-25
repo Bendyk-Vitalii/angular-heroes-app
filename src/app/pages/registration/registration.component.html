@@ -39,7 +39,9 @@
       <label for="email">Email:</label>
       <input
         type="email"
-        id="email"
+        name="email"
+        ngModel
+        [email]="true"
         formControlName="email"
         placeholder="example@gmail.com"
       />

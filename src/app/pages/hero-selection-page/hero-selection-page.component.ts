@@ -1,15 +1,17 @@
 import { ImgNotFoundLink } from 'src/app/shared/constants';
 import { Hero, ServerResponse } from './../../shared/interfaces';
 import { HeroesService } from './../../shared/services/heroes.service';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  Inject,
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { NgIfContext } from '@angular/common';
+import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
 
 @Component({
   selector: 'app-hero-selection-page',
@@ -18,24 +20,37 @@ import { Observable } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSelectionPageComponent implements OnInit {
-  heroes: Array<Hero> = [];
-  loader!: TemplateRef<any>;
-  form!: FormGroup;
-  imgNotFoundLink!: String;
-  alphabetGeneratorResult: Observable<string[]> | undefined;
-  fetchHeroes$!: Observable<any>;
-
+  public loader!: TemplateRef<NgIfContext<Hero[] | null>>;
+  public form!: FormGroup;
+  public imgNotFoundLink!: String;
+  public alphabetGeneratorResult: Observable<string[]> | undefined;
+  public getHeroes$!: Observable<Hero[]>;
+  public nameForSearch!: string;
   constructor(private heroesService: HeroesService) {}
 
   public ngOnInit(): void {
-    this.form = this.heroesService.formValidator();
+    this.form = new FormGroup({
+      searchByName: new FormControl('', [
+        Validators.required,
+        Validators.minLength(1),
+        forbiddenValueValidator(/[^A-Za-z]+/),
+      ]),
+    });
+
+    this.form.valueChanges.subscribe((changes) => {
+      this.nameForSearch = changes.searchByName;
+    });
+
     this.alphabetGeneratorResult = this.alphabetGenerator();
     this.imgNotFoundLink = ImgNotFoundLink;
-    this.fetchHeroes$ = this.fetchHeroes();
+    this.getHeroes$ = this.getHeroes();
+    this.getHeroes();
   }
 
-  public fetchHeroes(getBy = 'a'): Observable<ServerResponse> {
-    return this.heroesService.getByName(getBy);
+  public getHeroes(getBy = 'a'): Observable<Hero[]> {
+    return this.heroesService
+      .getByName(getBy)
+      .pipe(map((response: ServerResponse) => response.results));
   }
 
   public alphabetGenerator(): Observable<Array<string>> {
@@ -48,14 +63,9 @@ export class HeroSelectionPageComponent implements OnInit {
     );
   }
 
-  public submit(): void {
-    const { value }: any = this.form.get('searchByName');
-    this.fetchHeroes$ = this.fetchHeroes(value);
-  }
-
   public addToFavoriteHero(event: Event): void {
-    const e = event.target as HTMLInputElement;
-    e.disabled = true;
+    const targetCart = event.target as HTMLInputElement;
+    targetCart.disabled = true;
   }
 
   public identify(item: Number): Number {
@@ -63,7 +73,11 @@ export class HeroSelectionPageComponent implements OnInit {
   }
 
   public alphabetButtonHandler(event: Event): void {
-    const e = event.target as HTMLElement;
-    this.fetchHeroes$ = this.fetchHeroes(e.innerHTML);
+    const { innerText } = event.target as HTMLElement;
+    this.getHeroes$ = this.getHeroes(innerText);
+  }
+
+  onsubmit(getBy: string) {
+    this.getHeroes$ = this.getHeroes(getBy);
   }
 }

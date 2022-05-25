@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="submit()">
+<form [formGroup]="form" (ngSubmit)="onsubmit(nameForSearch)">
   <h2>Search heroes</h2>
   <div class="form-group">
     <div
@@ -12,13 +12,13 @@
         type="text"
         formControlName="searchByName"
         placeholder="searchByName"
+        appForbiddenValue
       />
       <button
         class="btn"
         type="submit"
         id="searchByName"
         [disabled]="form.get('searchByName')?.status === 'INVALID'"
-        (click)="submit()"
       >
         search
       </button>
@@ -35,13 +35,11 @@
   </button>
 </div>
 
-<ng-container *ngIf="fetchHeroes$ | async as heroes; else loader">
-  <ng-template #loader class="loader"></ng-template>
-
+<ng-container *ngIf="getHeroes$ | async as heroes; else loader">
   <div class="container-heroes">
-    <h3 class="title-result">result:{{ heroes.results.length }}</h3>
+    <h3 class="title-result">result:{{ heroes.length }}</h3>
     <div class="container-grid">
-      <ng-container *ngFor="let hero of heroes.results; trackBy: identify">
+      <ng-container *ngFor="let hero of heroes; trackBy: identify">
         <div class="hero-cart" ng-controller="classCtrl">
           <h4>{{ hero.name }}</h4>
           <img
@@ -69,3 +67,4 @@
     </div>
   </div>
 </ng-container>
+<ng-template #loader class="loader"></ng-template>
