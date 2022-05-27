@@ -1,6 +1,6 @@
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './auth.service';
 import {
   HttpEvent,
   HttpHandler,

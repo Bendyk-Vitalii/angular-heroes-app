@@ -1,68 +1,49 @@
-import { ActivatedRoute, Router, Params } from '@angular/router';
-import { AuthService } from '../../shared/services/auth.service';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { User } from '../../shared/interfaces';
+import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services/auth.service';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
 
 @Component({
   selector: 'app-login-page',
   templateUrl: './login-page.component.html',
   styleUrls: ['./login-page.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-
 export class LoginPageComponent implements OnInit {
-  form!: FormGroup;
-  submitted: boolean = false;
-  message: string | undefined;
+  public form!: FormGroup;
+  public message!: string;
 
-  constructor(
-    public auth: AuthService,
-    private router: Router,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit() {
-    this.route.queryParams.subscribe((params: Params) => {
-      if (params['loginAgain']) {
-        this.message = 'Please, write login&password';
-      } else if (params['authFailed']) {
-        this.message = 'Please< write login & password again';
-      }
-    });
-
+  public ngOnInit(): void {
     this.form = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
-        Validators.pattern(
+        Validators.minLength(6),
+        forbiddenValueValidator(
           /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
         ),
       ]),
     });
   }
 
-  submit():any {
-    if (this.form.invalid) {
-      return;
-    }
-    const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
-    if (new Date() < expDate) {
-     return this.router.navigate(['/homepage']);
-    }
-    this.submitted = true;
+  get email() {
+    return this.form.get('email')!;
+  }
 
-    const user: User = {
-      email: this.form.value.email,
-      password: this.form.value.password,
-      returnSecureToken: true,
-    };
+  get password() {
+    return this.form.get('password')!;
+  }
 
-    this.auth.login(user).subscribe(
-      () => {
-        this.form.reset();
-        this.router.navigate(['/homepage']);
-        this.submitted = false;
-      }
+  public submit(): void {
+    this.authService.loginSubmit(
+      this.form.value.email,
+      this.form.value.password,
+      this.router
     );
+    this.message = 'Please, write login & password again';
+    this.form.reset();
   }
 }

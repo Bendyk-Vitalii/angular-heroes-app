@@ -1,10 +1,6 @@
 <div class="container">
-  <form class="card" [formGroup]="form" (ngSubmit)="submit()">
+  <form [formGroup]="form" (ngSubmit)="submit()" [formGroup]="form">
     <h2>Join</h2>
-
-    <div class="alert alert-danger" *ngIf="auth.error$ | async as error">
-      {{ error }}
-    </div>
 
     <div class="alert alert-info" *ngIf="message">
       {{ message }}
@@ -17,7 +13,21 @@
       }"
     >
       <label for="login">Login:</label>
-      <input type="text" id="login" formControlName="login" />
+      <input
+        type="text"
+        id="login"
+        formControlName="login"
+        placeholder="Please write in camelCase"
+        required
+      />
+
+      <div class="validation">
+        <small
+          *ngIf="login?.errors?.['required'] && (form.touched || form.dirty)"
+        >
+          invalid login
+        </small>
+      </div>
     </div>
 
     <div
@@ -27,14 +37,18 @@
       }"
     >
       <label for="email">Email:</label>
-      <input type="email" id="email" formControlName="email" />
+      <input
+        type="email"
+        name="email"
+        ngModel
+        [email]="true"
+        formControlName="email"
+        placeholder="example@gmail.com"
+      />
 
-      <div class="validation" *ngIf="form.get('email')?.touched">
+      <div class="validation">
         <small
-          *ngIf="
-            form.get('email')?.status === 'INVALID' &&
-            form.get('email')?.touched
-          "
+          *ngIf="email?.errors?.['required'] && (form.touched || form.dirty)"
         >
           invalid email
         </small>
@@ -48,24 +62,32 @@
       }"
     >
       <label for="password">password:</label>
-      <input type="password" id="password" formControlName="password" />
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        placeholder="At least 6 characters"
+      />
       <div class="validation">
         <small
-          *ngIf="
-            !form.get('password')?.value.length && form.get('password')?.touched
-          "
-        >
-          Write your password
+          *ngIf="password?.errors?.['required'] && (form.touched || form.dirty)"
+          >Password is required.
         </small>
-        <small
-          *ngIf="
-            form.get('password')?.dirty &&
-            form.get('password')?.value.length < 5
-          "
-          >Your password must be minimum 6 symbols
+        <small *ngIf="password?.errors?.['minLength']"
+          >Password should have minimum 6 characters
+        </small>
+        <small *ngIf="password?.errors?.['appForbiddenValue']"
+          >Password should have at least 1 uppercase letter, 1 lowercase letter,
+          1 number and at least one of symbols !@#$%^&*
         </small>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">Join Heroes</button>
+
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+      Join Heroes
+    </button>
+    <button type="submit" class="btn btn-primary" routerLink="/login">
+      Sign in
+    </button>
   </form>
 </div>

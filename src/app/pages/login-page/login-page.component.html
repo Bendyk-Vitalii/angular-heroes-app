@@ -1,68 +1,65 @@
 <div class="container">
-<form class="card" [formGroup]="form" (ngSubmit)="submit()">
-  <h2>Log in</h2>
+  <form class="card" (ngSubmit)="submit()" [formGroup]="form">
+    <h2>Log in</h2>
 
-  <div class="alert alert-danger" *ngIf="auth.error$ | async as error">
-    {{ error }}
-  </div>
+    <div class="alert alert-info" *ngIf="message">
+      {{ message }}
+    </div>
 
-  <div class="alert alert-info" *ngIf="message">
-    {{ message }}
-  </div>
+    <div class="form-control">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        name="email"
+        ngModel
+        [email]="true"
+        formControlName="email"
+        placeholder="Email"
+        class="form-control"
+        required
+      />
 
-  <div
-    class="form-control"
-    [ngClass]="{
-      invalid: form.get('email')?.touched && form.get('email')?.invalid
-    }"
-  >
-    <label for="email">Email:</label>
-    <input type="email" id="email" formControlName="email" />
+      <div class="validation">
+        <small *ngIf="email.errors?.['required'] || email.errors">
+          invalid email
+        </small>
+      </div>
+    </div>
 
-    <div
-      class="validation"
-      *ngIf="form.get('email')?.touched"
+    <div class="form-control">
+      <label for="password">password:</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        placeholder="Password"
+        class="form-control"
+        autocomplete
+        appForbiddenValue
+        required
+      />
+      <div class="validation">
+        <small
+          *ngIf="password?.errors?.['required'] && (form.touched || form.dirty)"
+          >Password is required.
+        </small>
+        <small *ngIf="password?.errors?.['minlength']"
+          >Password should have minimum 6 characters
+        </small>
+        <small *ngIf="password?.errors?.['appForbiddenValue']"
+          >Password should have at least 1 uppercase letter, 1 lowercase letter,
+          1 number and at least one of symbols !@#$%^&*
+        </small>
+      </div>
+    </div>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      (click)="submit()"
+      [disabled]="form.invalid"
     >
-      <small
-        *ngIf="
-          form.get('email')?.status === 'INVALID' && form.get('email')?.touched
-        "
-      >
-        invalid email
-      </small>
-    </div>
-  </div>
-
-  <div
-    class="form-control"
-    [ngClass]="{
-      invalid: form.get('password')?.touched && form.get('password')?.errors
-    }"
-  >
-    <label for="password">password:</label>
-    <input type="password" id="password" formControlName="password" />
-    <div class="validation">
-      <small
-        *ngIf="
-          !form.get('password')?.value.length && form.get('password')?.touched
-        "
-      >
-        Write your password
-      </small>
-      <small
-        *ngIf="
-          form.get('password')?.dirty && form.get('password')?.value.length < 5
-        "
-        >Your password must be minimum 6 symbols
-      </small>
-    </div>
-  </div>
-  <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
-    sign in
-  </button>
-  <button class="btn btn-primary" routerLink="/registration" [disabled]="!form.invalid">Join</button>
-</form>
-
+      sign in
+    </button>
+    <button class="btn btn-primary" routerLink="/registration">Join</button>
+  </form>
 </div>
-
-
