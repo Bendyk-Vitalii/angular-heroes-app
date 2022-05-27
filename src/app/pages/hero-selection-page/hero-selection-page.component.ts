@@ -4,12 +4,11 @@ import { HeroesService } from './../../shared/services/heroes.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { map, Observable, Subscription } from 'rxjs';
 import { NgIfContext } from '@angular/common';
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
 
@@ -29,22 +28,28 @@ export class HeroSelectionPageComponent implements OnInit {
   constructor(private heroesService: HeroesService) {}
 
   public ngOnInit(): void {
-    this.form = new FormGroup({
+    this.formInit();
+    this.followFormChanges();
+    this.alphabetGeneratorResult = this.alphabetGenerator();
+    this.imgNotFoundLink = ImgNotFoundLink;
+    this.getHeroes$ = this.getHeroes();
+    this.getHeroes();
+  }
+
+  private formInit(): FormGroup {
+    return (this.form = new FormGroup({
       searchByName: new FormControl('', [
         Validators.required,
         Validators.minLength(1),
         forbiddenValueValidator(/[^A-Za-z]+/),
       ]),
-    });
+    }));
+  }
 
-    this.form.valueChanges.subscribe((changes) => {
+  private followFormChanges(): Subscription {
+    return this.form.valueChanges.subscribe((changes) => {
       this.nameForSearch = changes.searchByName;
     });
-
-    this.alphabetGeneratorResult = this.alphabetGenerator();
-    this.imgNotFoundLink = ImgNotFoundLink;
-    this.getHeroes$ = this.getHeroes();
-    this.getHeroes();
   }
 
   public getHeroes(getBy = 'a'): Observable<Hero[]> {

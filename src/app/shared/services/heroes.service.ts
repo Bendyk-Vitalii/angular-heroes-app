@@ -14,17 +14,4 @@ export class HeroesService {
   getByName(id: string): Observable<ServerResponse> {
     return this.http.get<any>(`${environment.heroes.searchBy}/${id}`);
   }
-
-  // selectHero(id: string): void {
-  //   const userJson = localStorage.getItem('selected-heroes-array');
-  //   let currentArray = [];
-  //   if (userJson) {
-  //     currentArray = JSON.parse(userJson);
-  //   }
-  //   currentArray.push(id);
-  //   return localStorage.setItem(
-  //     'selected-heroes-array',
-  //     JSON.stringify(currentArray)
-  //   );
-  // }
 }
