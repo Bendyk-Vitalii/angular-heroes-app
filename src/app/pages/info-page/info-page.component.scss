@@ -1,0 +1,80 @@
+.navbar {
+  margin-bottom: 0;
+}
+
+.btn-list {
+  margin-top: -1rem;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(174, 174, 174);
+}
+
+.btn {
+  margin-right: 0;
+  border-radius: 5px;
+}
+
+.btn .clicked {
+  align-items: flex-end;
+  background-color: var(--danger-color);
+  align-items: flex-end;
+  margin-bottom: 333px;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  text-align: center;
+  font-weight: 100;
+  font-family: sans-serif;
+}
+
+a {
+  display: block;
+  margin-top: 40px;
+  color: inherit;
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center;
+  font-size: 0;
+  border: 1px solid #fff;
+}
+
+label {
+  position: relative;
+  cursor: pointer;
+  font-size: 12px;
+  display: inline-block;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  width: 200px;
+  padding: 13px 0;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+#heroes-list + label:before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  z-index: -1;
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+#heroes-list :checked + label:before {
+  left: 0;
+}
+
+#heroes-list :checked + label,
+#history:checked + label,
+#power-ups:checked + label {
+  color: #000;
+}
+@import 'https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300';
+

@@ -8,7 +8,7 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { map, Observable, Subscription } from 'rxjs';
+import { map, Observable, Subscription, Subject, BehaviorSubject } from 'rxjs';
 import { NgIfContext } from '@angular/common';
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
 
@@ -25,7 +25,9 @@ export class HeroSelectionPageComponent implements OnInit {
   public alphabetGeneratorResult: Observable<string[]> | undefined;
   public getHeroes$!: Observable<Hero[]>;
   public nameForSearch!: string;
-  constructor(private heroesService: HeroesService) {}
+  public selectedHeroes$ = new BehaviorSubject<String[]>([]);
+  public addToFavoriteHeroes!: (event: Event) => void;
+  constructor(public heroesService: HeroesService) {}
 
   public ngOnInit(): void {
     this.formInit();
@@ -34,6 +36,7 @@ export class HeroSelectionPageComponent implements OnInit {
     this.imgNotFoundLink = ImgNotFoundLink;
     this.getHeroes$ = this.getHeroes();
     this.getHeroes();
+    this.addToFavoriteHeroes = this.heroesService.addToFavoriteHero;
   }
 
   private formInit(): FormGroup {
@@ -68,10 +71,23 @@ export class HeroSelectionPageComponent implements OnInit {
     );
   }
 
-  public addToFavoriteHero(event: Event): void {
-    const targetCart = event.target as HTMLInputElement;
-    targetCart.disabled = true;
-  }
+  // export interface Hero {
+  //   appearance: Object;
+  //   biography: Object;
+  //   connections: Object;
+  //   id: string;
+  //   image: any;
+  //   name: string;
+  //   powerstats: any;
+  //   work: Object;
+  // }
+  // public addToFavoriteHero(event: Event): void {
+  //   const targetHero = event.target as HTMLInputElement;
+  //   targetHero.disabled = true;
+  //   this.selectedHeroes$.subscribe({
+  //     next: (previousArray) => previousArray.push(targetHero.id),
+  //   });
+  // }
 
   public identify(item: Number): Number {
     return item;

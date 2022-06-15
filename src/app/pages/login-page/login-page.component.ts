@@ -13,18 +13,17 @@ import { forbiddenValueValidator } from 'src/app/shared/custom-validators.direct
 export class LoginPageComponent implements OnInit {
   public form!: FormGroup;
   public message!: string;
+  private forbiddenPassword =
+    /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g;
 
   constructor(private authService: AuthService, private router: Router) {}
-
   public ngOnInit(): void {
     this.form = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
       password: new FormControl('', [
         Validators.required,
         Validators.minLength(6),
-        forbiddenValueValidator(
-          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
-        ),
+        forbiddenValueValidator(this.forbiddenPassword),
       ]),
     });
   }
@@ -39,8 +38,8 @@ export class LoginPageComponent implements OnInit {
 
   public submit(): void {
     this.authService.loginSubmit(
-      this.form.value.email,
-      this.form.value.password,
+      this.email.value,
+      this.password.value,
       this.router
     );
     this.message = 'Please, write login & password again';

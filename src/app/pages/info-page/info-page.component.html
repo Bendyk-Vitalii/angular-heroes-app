@@ -1,1 +1,8 @@
-<p>info-page works!</p>
+<form class="btn-container" (click)="submit($event)">
+    <input type="radio" name="heroes-list" id="heroes-list" checked hidden [value]="true" />
+    <label for="heroes-list">Heroes list</label>
+    <input type="radio" name="history" id="history" hidden />
+    <label for="history"> History</label>
+    <input type="radio" name="power-ups" id="power-ups" hidden />
+    <label for="power-ups"> Power ups</label>
+</form>
