@@ -1,7 +1,6 @@
-import { Router, Routes } from '@angular/router';
+import { Router } from '@angular/router';
 import { User } from './../../shared/interfaces';
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -61,16 +60,4 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!this.token;
   }
-
-  // private setToken(response: any) {
-  //   if (response) {
-  //     const expDate = new Date(
-  //       new Date().getTime() + +response.expiresIn * 1000
-  //     );
-  //     localStorage.setItem('fb-token', response.idToken);
-  //     localStorage.setItem('fb-token-exp', expDate.toString());
-  //   } else {
-  //     localStorage.clear();
-  //   }
-  // }
 }

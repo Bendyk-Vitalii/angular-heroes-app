@@ -1,3 +1,4 @@
+import { ServerResponse } from './../interfaces';
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
@@ -16,9 +17,9 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private auth: AuthService, private router: Router) {}
 
   intercept(
-    req: HttpRequest<any>,
+    req: HttpRequest<ServerResponse>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<ServerResponse>> {
     if (this.auth.isAuthenticated()) {
       req = req.clone({
         setParams: {

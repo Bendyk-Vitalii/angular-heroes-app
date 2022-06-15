@@ -11,25 +11,27 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationComponent implements OnInit {
-  form!: FormGroup;
-  submitted = false;
-  message: string | undefined;
+  public form!: FormGroup;
+  public submitted = false;
+  public message: string | undefined;
+  private forbiddenLoginValue = /^[a-z]{1,}([A-Z][a-z]{1,}){1,}$/gm;
+  private forbiddenPasswordValue =
+    /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g;
 
   constructor(public authService: AuthService, private router: Router) {}
 
   public ngOnInit(): void {
     this.form = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [
-        Validators.required,
-        forbiddenValueValidator(
-          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
-        ),
-      ]),
       login: new FormControl('', [
         Validators.minLength(8),
         Validators.required,
-        forbiddenValueValidator(/^[a-z]{1,}([A-Z][a-z]{1,}){1,}$/gm),
+        forbiddenValueValidator(this.forbiddenLoginValue),
+      ]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.minLength(6),
+        Validators.required,
+        forbiddenValueValidator(this.forbiddenPasswordValue),
       ]),
     });
   }
@@ -62,5 +64,10 @@ export class RegistrationComponent implements OnInit {
 
   get password() {
     return this.form.get('password')!;
+  }
+  ngDoCheck(): void {
+    //Called every time that the input properties of a component or a directive are checked. Use it to extend change detection by performing a custom check.
+    //Add 'implements DoCheck' to the class.
+    console.dir(this.login, 'login');
   }
 }
