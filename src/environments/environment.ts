@@ -5,9 +5,6 @@ import { Environment } from './interface';
 
 export const environment: Environment = {
   production: false,
-  heroes: {
-    searchBy: 'https://superheroapi.com/api.php/1880983215397777/search/',
-  },
 };
 
 /*

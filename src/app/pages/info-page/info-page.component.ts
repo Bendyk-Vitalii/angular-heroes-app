@@ -1,6 +1,7 @@
-import { HeroesService } from './../../shared/services/heroes.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+
+import { HeroesService } from './../../shared/services/heroes.service';
 
 @Component({
   selector: 'app-info-page',
@@ -13,7 +14,7 @@ export class InfoPageComponent implements OnInit, OnDestroy {
   constructor(private heroesService: HeroesService) {}
 
   ngOnInit(): void {
-    this.heroesService.selectedHeroes$.subscribe(console.log);
+    this.heroesService.selectedHeroes$.subscribe(console.dir);
     this.selectedHeroes = this.heroesService.selectedHeroes$;
   }
 

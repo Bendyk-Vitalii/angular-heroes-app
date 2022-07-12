@@ -1,22 +1,26 @@
-import { ServerResponse } from './../interfaces';
-import { environment } from './../../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+
+import { Hero } from './../interfaces';
 
 @Injectable({
   providedIn: 'root',
 })
 export class HeroesService {
   public selectedHeroes$ = new BehaviorSubject<String[]>([]);
+  public actualHeroesArray$ = new BehaviorSubject<Hero[]>([]);
   private previousValue: Array<String> = [];
+  private allHeroesUrl = 'http://localhost:3000/api/heroes/all';
+
   constructor(private http: HttpClient) {}
 
-  public getByName(id: string): Observable<ServerResponse> {
+  public getAll(): Observable<Hero[]> {
+    return this.http.get<Hero[]>(this.allHeroesUrl);
+  }
 
-    return this.http.get<ServerResponse>(
-      `${environment.heroes.searchBy}/${id}`,
-    );
+  public getByName(id: string): Observable<Hero[]> {
+    return this.http.get<Hero[]>(`${this.allHeroesUrl}?${id}`);
   }
 
   public addToFavoriteHero(event: Event): void {

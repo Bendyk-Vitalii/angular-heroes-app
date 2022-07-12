@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Router } from '@angular/router';
+
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
 import { User } from 'src/app/shared/interfaces';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-registration',
@@ -64,10 +65,5 @@ export class RegistrationComponent implements OnInit {
 
   get password() {
     return this.form.get('password')!;
-  }
-  ngDoCheck(): void {
-    //Called every time that the input properties of a component or a directive are checked. Use it to extend change detection by performing a custom check.
-    //Add 'implements DoCheck' to the class.
-    console.dir(this.login, 'login');
   }
 }

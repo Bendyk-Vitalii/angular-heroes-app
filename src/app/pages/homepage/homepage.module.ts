@@ -1,15 +1,15 @@
-import { CONSTANTS } from './../../shared/constants';
-import { InfoPageComponent } from '../info-page/info-page.component';
 import { HttpClientModule } from '@angular/common/http';
-import { HomepageComponent } from './homepage.component';
-import { NgModule } from '@angular/core';
-import { AuthGuard } from 'src/app/shared/services/auth.guard';
 import { RouterModule, Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
+
+import { HomepageComponent } from './homepage.component';
+import { AuthGuard } from 'src/app/shared/services/auth/auth.guard';
 import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selection-page.component';
 import { CheckNullPipe } from '../../shared/pipes/check-null.pipe';
-import { ImgNotFoundLink } from 'src/app/shared/constants';
+import { InfoPageComponent } from '../info-page/info-page.component';
 
 const routes: Routes = [
   {
@@ -37,15 +37,10 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    NgxPaginationModule,
     RouterModule.forChild(routes),
   ],
   exports: [RouterModule],
-  providers: [
-    AuthGuard,
-    {
-      provide: CONSTANTS,
-      useValue: { ImgNotFoundLink },
-    },
-  ],
+  providers: [AuthGuard],
 })
 export class HomePageModule {}
