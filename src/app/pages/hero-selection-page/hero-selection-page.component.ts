@@ -20,7 +20,7 @@ export class HeroSelectionPageComponent implements OnInit {
 
   public page: number = 1;
 
-  constructor(private heroesService: HeroesService) {}
+  constructor(public heroesService: HeroesService) {}
 
   public ngOnInit(): void {
     this.formInit();
@@ -69,17 +69,6 @@ export class HeroSelectionPageComponent implements OnInit {
     this.heroesService
       .getAll()
       .subscribe((heroes) => this.heroesService.setHeroesData(heroes), share());
-  }
-
-  public getHeroesByName(getBy: string) {
-    this.heroesService
-      .getByName(getBy)
-      .pipe(
-        map(
-          (heroes: Hero[]) => this.heroesService.setHeroesData(heroes),
-          share()
-        )
-      );
   }
 
   public alphabetGenerator(): Observable<Array<string>> {
