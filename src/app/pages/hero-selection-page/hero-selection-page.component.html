@@ -1,4 +1,4 @@
-<form [formGroup]="form" (ngSubmit)="onsubmit('a')">
+<form [formGroup]="form">
     <h2>Search heroes</h2>
     <div class="form-group">
         <div class="form-control btn-input-group" [ngClass]="{
@@ -6,29 +6,27 @@
           form.get('searchByName')?.touched && form.get('searchByName')?.invalid
       }">
             <input type="text" formControlName="searchByName" placeholder="searchByName" appForbiddenValue />
-            <button class="btn" type="submit" id="searchByName" [disabled]="form.get('searchByName')?.status === 'INVALID'">
-        search
-      </button>
         </div>
     </div>
 </form>
+
 <div class="search-alphabet" *ngIf="alphabetGeneratorResult | async as letters">
     <button class="btn" *ngFor="let letter of letters" (click)="alphabetButtonHandler($event)">
     {{ letter }}
   </button>
 </div>
 
-<div class="container-heroes">
-    <h3 class="title-result">result:{{ heroes?.length }}</h3>
+<div class="container-heroes" *ngIf="heroes$ | async as heroes">
+    <h3 class="title-result" *ngIf="heroes.length">result:{{ heroes.length }}</h3>
     <div class="container-grid">
         <ng-container *ngFor="
         let hero of heroes
           | paginate
             : {
-                id: 'foo',
+                id: 'pagination',
                 itemsPerPage: 10,
-                currentPage: p,
-                totalItems: heroes?.length
+                currentPage: page,
+                totalItems: heroes.length
               };
         trackBy: identify
       ">
@@ -50,8 +48,6 @@
             </div>
         </ng-container>
     </div>
-</div>
 
-<ng-template ngIf="{{ heroes.length }}" #pagination>
-    <pagination-controls (pageChange)="p = $event" id="pagination"></pagination-controls>
-</ng-template>
+    <pagination-controls (pageChange)="page = $event" id="pagination" *ngIf="heroes.length"></pagination-controls>
+</div>

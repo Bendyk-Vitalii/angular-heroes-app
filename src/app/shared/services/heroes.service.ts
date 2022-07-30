@@ -1,6 +1,8 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, switchMap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { distinctUntilChanged, debounceTime, tap } from 'rxjs/operators';
+import { FormControl, FormGroup } from '@angular/forms';
 
 import { Hero } from './../interfaces';
 
@@ -8,19 +10,20 @@ import { Hero } from './../interfaces';
   providedIn: 'root',
 })
 export class HeroesService {
-  public selectedHeroes$ = new BehaviorSubject<String[]>([]);
-  public actualHeroesArray$ = new BehaviorSubject<Hero[]>([]);
+  private selectedHeroes$ = new BehaviorSubject<String[]>([]);
+  private actualHeroesSubject = new BehaviorSubject<Hero[]>([]);
+  public actualHeroesData$ = this.actualHeroesSubject.asObservable();
   private previousValue: Array<String> = [];
   private allHeroesUrl = 'http://localhost:3000/api/heroes/all';
 
   constructor(private http: HttpClient) {}
 
-  public getAll(): Observable<Hero[]> {
+  private getAll(): Observable<Hero[]> {
     return this.http.get<Hero[]>(this.allHeroesUrl);
   }
 
-  public getByName(id: string): Observable<Hero[]> {
-    return this.http.get<Hero[]>(`${this.allHeroesUrl}?${id}`);
+  private setHeroesData(dataResponse: Hero[]): void {
+    this.actualHeroesSubject.next(dataResponse);
   }
 
   public addToFavoriteHero(event: Event): void {

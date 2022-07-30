@@ -1,14 +1,9 @@
 .funspinner {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
     &__box {
         width: 25vw;
         height: 25vw;
-        margin: 0 0 0 -1px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        margin: 10vh auto;
         position: relative;
         border: 1px solid rgba(255, 255, 255, 0.3);
     }
@@ -17,8 +12,7 @@
 div.linesquare,
 div.texttransform {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 0 3%;
     width: 100%;
     color: #000000;
     font-size: 2vw;

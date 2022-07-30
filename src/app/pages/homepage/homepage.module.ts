@@ -4,12 +4,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 import { HomepageComponent } from './homepage.component';
 import { AuthGuard } from 'src/app/shared/services/auth/auth.guard';
 import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selection-page.component';
 import { CheckNullPipe } from '../../shared/pipes/check-null.pipe';
 import { InfoPageComponent } from '../info-page/info-page.component';
+import { InfoContentComponent } from '../info-page/info-component/info.component';
 
 const routes: Routes = [
   {
@@ -31,13 +33,20 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [HeroSelectionPageComponent, HomepageComponent, CheckNullPipe],
+  declarations: [
+    HeroSelectionPageComponent,
+    HomepageComponent,
+    InfoPageComponent,
+    InfoContentComponent,
+    CheckNullPipe,
+  ],
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
     NgxPaginationModule,
+    Ng2SearchPipeModule,
     RouterModule.forChild(routes),
   ],
   exports: [RouterModule],
