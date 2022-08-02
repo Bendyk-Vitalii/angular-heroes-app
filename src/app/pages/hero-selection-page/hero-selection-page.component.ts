@@ -1,6 +1,6 @@
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { Observable, map, of, share } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
@@ -17,7 +17,6 @@ export class HeroSelectionPageComponent implements OnInit {
   public form!: FormGroup;
   public heroes$!: Observable<Hero[]>;
   public alphabetGeneratorResult: Observable<string[]> | undefined;
-
   public page: number = 1;
 
   constructor(public heroesService: HeroesService) {}
@@ -28,7 +27,9 @@ export class HeroSelectionPageComponent implements OnInit {
 
     this.alphabetGeneratorResult = this.alphabetGenerator();
 
-    this.getAllHeroes();
+    if (!this.heroesService.actualHeroesSubject.getValue().length) {
+      this.getAllHeroes();
+    }
     this.heroes$ = this.heroesService.actualHeroesData$;
   }
 
@@ -68,7 +69,7 @@ export class HeroSelectionPageComponent implements OnInit {
   private getAllHeroes(): void {
     this.heroesService
       .getAll()
-      .subscribe((heroes) => this.heroesService.setHeroesData(heroes), share());
+      .subscribe((heroes) => this.heroesService.setHeroesData(heroes));
   }
 
   public alphabetGenerator(): Observable<Array<string>> {

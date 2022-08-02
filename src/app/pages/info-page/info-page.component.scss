@@ -54,6 +54,10 @@ body {
     border: solid 1px #000;
     padding: 10px;
   }
+
+  td {
+    text-align: center;
+  }
   
   table {
       max-width: 80vw;
@@ -63,14 +67,13 @@ body {
   }
 
   .table-img {
-    height: 47vh;
-    width: 9vw;
-    border-radius: 50%;
+    width: 10vw;
+    border-radius: 5%;
     object-fit: cover;
   }
 
-
-
-
+  .show {
+    display: block;
+  }
 
 @import "https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300";
