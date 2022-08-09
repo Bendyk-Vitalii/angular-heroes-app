@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Router } from '@angular/router';
+
+import { GlobalConstants } from './../../shared/global-constants';
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
-import { User } from 'src/app/shared/interfaces';
-import { AuthService } from 'src/app/shared/services/auth.service';
+import { IUser } from 'src/app/shared/interfaces';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-registration',
@@ -11,25 +13,26 @@ import { AuthService } from 'src/app/shared/services/auth.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationComponent implements OnInit {
-  form!: FormGroup;
-  submitted = false;
-  message: string | undefined;
+  public form!: FormGroup;
+  public submitted = false;
+  public message: string | undefined;
+  private forbiddenLoginValue = GlobalConstants.forbiddenLoginValue;
+  private forbiddenPasswordValue = GlobalConstants.forbiddenPassword;
 
   constructor(public authService: AuthService, private router: Router) {}
 
   public ngOnInit(): void {
     this.form = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [
-        Validators.required,
-        forbiddenValueValidator(
-          /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g
-        ),
-      ]),
       login: new FormControl('', [
         Validators.minLength(8),
         Validators.required,
-        forbiddenValueValidator(/^[a-z]{1,}([A-Z][a-z]{1,}){1,}$/gm),
+        forbiddenValueValidator(this.forbiddenLoginValue),
+      ]),
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.minLength(6),
+        Validators.required,
+        forbiddenValueValidator(this.forbiddenPasswordValue),
       ]),
     });
   }
@@ -39,7 +42,7 @@ export class RegistrationComponent implements OnInit {
       return;
     }
 
-    const user: User = this.form.value;
+    const user: IUser = this.form.value;
 
     this.submitted = true;
 

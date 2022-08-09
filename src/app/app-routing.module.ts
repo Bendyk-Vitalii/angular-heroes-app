@@ -1,7 +1,8 @@
-import { RegistrationComponent } from './pages/registration/registration.component';
-import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+
+import { RegistrationComponent } from './pages/registration/registration.component';
+import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 
 const routes: Routes = [

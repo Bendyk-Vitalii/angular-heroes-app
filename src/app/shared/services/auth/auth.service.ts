@@ -1,10 +1,11 @@
-import { Router, Routes } from '@angular/router';
-import { User } from './../../shared/interfaces';
+import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+
+import { IUser } from '../../interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  constructor(private router: Router) {}
   get token(): string | null {
     const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
     if (new Date() > expDate) {
@@ -14,21 +15,17 @@ export class AuthService {
     return localStorage.getItem('fb-token');
   }
 
-  loginSubmit(
-    email: String,
-    password: String,
-    router: Router
-  ): void | Promise<boolean> {
+  loginSubmit(email: string, password: string): void | Promise<boolean> {
     const userInfo = JSON.parse(localStorage.getItem('user-data') as string);
     const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
     const expression =
       userInfo.email === email && userInfo.password === password;
     if (expression) {
-      return router.navigate(['/homepage', 'heroselection']);
+      return this.router.navigate(['/homepage', 'heroselection']);
     }
   }
 
-  register(user: User): void {
+  register(user: IUser): void {
     const expDate = new Date(new Date().getTime() + 25000);
 
     const allCapsAlpha = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
@@ -61,16 +58,4 @@ export class AuthService {
   isAuthenticated(): boolean {
     return !!this.token;
   }
-
-  // private setToken(response: any) {
-  //   if (response) {
-  //     const expDate = new Date(
-  //       new Date().getTime() + +response.expiresIn * 1000
-  //     );
-  //     localStorage.setItem('fb-token', response.idToken);
-  //     localStorage.setItem('fb-token-exp', expDate.toString());
-  //   } else {
-  //     localStorage.clear();
-  //   }
-  // }
 }

@@ -1,6 +1,5 @@
 import { catchError, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
 import {
   HttpEvent,
   HttpHandler,
@@ -11,14 +10,17 @@ import {
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 
+import { AuthService } from './auth.service';
+import { ServerResponse } from '../../interfaces';
+
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
   constructor(private auth: AuthService, private router: Router) {}
 
   intercept(
-    req: HttpRequest<any>,
+    req: HttpRequest<ServerResponse>,
     next: HttpHandler
-  ): Observable<HttpEvent<any>> {
+  ): Observable<HttpEvent<ServerResponse>> {
     if (this.auth.isAuthenticated()) {
       req = req.clone({
         setParams: {

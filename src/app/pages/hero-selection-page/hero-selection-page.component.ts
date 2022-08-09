@@ -1,16 +1,17 @@
-import { ImgNotFoundLink } from 'src/app/shared/constants';
-import { Hero, ServerResponse } from './../../shared/interfaces';
-import { HeroesService } from './../../shared/services/heroes.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { GlobalConstants } from './../../shared/global-constants';
 import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  TemplateRef,
-} from '@angular/core';
-import { map, Observable, Subscription } from 'rxjs';
-import { NgIfContext } from '@angular/common';
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
+
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
+import { Hero } from './../../shared/interfaces';
+import { HeroesService } from './../../shared/services/heroes.service';
 
 @Component({
   selector: 'app-hero-selection-page',
@@ -19,43 +20,65 @@ import { forbiddenValueValidator } from 'src/app/shared/custom-validators.direct
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSelectionPageComponent implements OnInit {
-  public loader!: TemplateRef<NgIfContext<Hero[] | null>>;
   public form!: FormGroup;
-  public imgNotFoundLink!: String;
+  public heroes$!: Observable<Hero[]>;
   public alphabetGeneratorResult: Observable<string[]> | undefined;
-  public getHeroes$!: Observable<Hero[]>;
-  public nameForSearch!: string;
-  constructor(private heroesService: HeroesService) {}
+  public page = 1;
+  public pageNotFoundUrl = GlobalConstants.pageNotFoundUrl;
+  private inputSearchByName!: FormControl | AbstractControl | null;
+  private actualHeroes$$ = this.heroesService.actualHeroes$$;
+  constructor(public heroesService: HeroesService) {}
 
   public ngOnInit(): void {
-    this.formInit();
-    this.followFormChanges();
+    this.loadScript();
     this.alphabetGeneratorResult = this.alphabetGenerator();
-    this.imgNotFoundLink = ImgNotFoundLink;
-    this.getHeroes$ = this.getHeroes();
-    this.getHeroes();
+    this.formInit();
   }
 
-  private formInit(): FormGroup {
-    return (this.form = new FormGroup({
+  private loadScript(): void {
+    if (!this.actualHeroes$$.getValue().length) {
+      this.getAllHeroes();
+    }
+    this.heroes$ = this.heroesService.actualHeroesData$;
+  }
+
+  private formInit(): void {
+    this.form = new FormGroup({
       searchByName: new FormControl('', [
         Validators.required,
         Validators.minLength(1),
-        forbiddenValueValidator(/[^A-Za-z]+/),
+        forbiddenValueValidator(/[a-zA-Z]/),
       ]),
-    }));
-  }
-
-  private followFormChanges(): Subscription {
-    return this.form.valueChanges.subscribe((changes) => {
-      this.nameForSearch = changes.searchByName;
     });
   }
 
-  public getHeroes(getBy = 'a'): Observable<Hero[]> {
-    return this.heroesService
-      .getByName(getBy)
-      .pipe(map((response: ServerResponse) => response.results));
+  private getAllHeroes(): void {
+    this.heroesService
+      .getAll()
+      .subscribe((heroes) => this.heroesService.setHeroesData(heroes));
+  }
+
+  private searchByName(searchForm = this.inputSearchByName): void {
+    let filteredHeroesArray: Hero[];
+    searchForm?.valueChanges.subscribe((filterValue) => {
+      if (filterValue === '') {
+        this.heroes$ = this.heroesService.actualHeroesData$;
+      }
+      if (searchForm?.status === 'INVALID') {
+        return;
+      }
+      debounceTime(900), distinctUntilChanged(), dataFilter(filterValue);
+    });
+
+    const dataFilter = (valueForSearch: string): void => {
+      filteredHeroesArray = this.actualHeroes$$
+        .getValue()
+        .filter(
+          (hero: Hero) =>
+            hero.name.toLowerCase().indexOf(valueForSearch.toLowerCase()) !== -1
+        );
+      this.heroes$ = of(filteredHeroesArray);
+    };
   }
 
   public alphabetGenerator(): Observable<Array<string>> {
@@ -68,21 +91,26 @@ export class HeroSelectionPageComponent implements OnInit {
     );
   }
 
-  public addToFavoriteHero(event: Event): void {
-    const targetCart = event.target as HTMLInputElement;
-    targetCart.disabled = true;
+  public alphabetButtonHandler(event: Event): void {
+    const { innerText } = event.target as HTMLElement;
+    const heroesArray = this.actualHeroes$$.getValue();
+
+    const filteredHeroes$: Observable<Hero[]> = new Observable(
+      function subscribe(subscriber) {
+        subscriber.next(
+          heroesArray.filter((hero) => Array.from(hero.name)[0] == innerText)
+        );
+      }
+    );
+    this.heroes$ = filteredHeroes$;
   }
 
   public identify(item: Number): Number {
     return item;
   }
 
-  public alphabetButtonHandler(event: Event): void {
-    const { innerText } = event.target as HTMLElement;
-    this.getHeroes$ = this.getHeroes(innerText);
-  }
-
-  onsubmit(getBy: string) {
-    this.getHeroes$ = this.getHeroes(getBy);
+  ngAfterViewInit(): void {
+    this.inputSearchByName = this.form.get('searchByName');
+    this.searchByName(this.inputSearchByName);
   }
 }

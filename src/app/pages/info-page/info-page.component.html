@@ -1,1 +1,85 @@
-<p>info-page works!</p>
+<div class="btn-container">
+  <button class="btn btn-info" (click)="heroesList.show()">
+    <span>Heroes list</span>
+  </button>
+
+  <button
+    class="btn btn-info"
+    (click)="firstBoot = false"
+    (click)="history.show()"
+  >
+    <span>History</span>
+  </button>
+
+  <button
+    class="btn btn-info"
+    (click)="firstBoot = false"
+    (click)="powerUps.show()"
+  >
+    <span>Power ups</span>
+  </button>
+</div>
+
+<app-info-component #heroesList [class.show]="firstBoot">
+  <h2 class="title">Heroes list</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="selectedHeroes$ | async as heroes">
+      <ng-container *ngFor="let hero of heroes">
+        <tr>
+          <td>
+            <img
+              class="table-img"
+              src="{{ hero.images.sm }}"
+              onerror="src= pageNotFoundUrl"
+            />
+          </td>
+          <td>
+            {{ hero.name }}
+          </td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</app-info-component>
+
+<app-info-component #history>
+  <div>
+    <h2 class="title">History</h2>
+  </div>
+</app-info-component>
+
+<app-info-component #powerUps>
+  <h2 class="title">Power UPS</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Combat</th>
+        <th>Durability</th>
+        <th>Intelligence</th>
+        <th>Power</th>
+        <th>Speed</th>
+        <th>Strength</th>
+      </tr>
+    </thead>
+    <tbody *ngIf="selectedHeroes$ | async as heroes">
+      <ng-container *ngFor="let hero of heroes">
+        <tr>
+          <td>{{ hero.name }}</td>
+          <td>{{ hero.powerstats.combat }}</td>
+          <td>{{ hero.powerstats.durability }}</td>
+          <td>{{ hero.powerstats.intelligence }}</td>
+          <td>{{ hero.powerstats.power }}</td>
+          <td>{{ hero.powerstats.speed }}</td>
+          <td>{{ hero.powerstats.strength }}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+</app-info-component>
