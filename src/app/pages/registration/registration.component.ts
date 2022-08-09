@@ -2,8 +2,9 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { GlobalConstants } from './../../shared/global-constants';
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
-import { User } from 'src/app/shared/interfaces';
+import { IUser } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 
 @Component({
@@ -15,9 +16,8 @@ export class RegistrationComponent implements OnInit {
   public form!: FormGroup;
   public submitted = false;
   public message: string | undefined;
-  private forbiddenLoginValue = /^[a-z]{1,}([A-Z][a-z]{1,}){1,}$/gm;
-  private forbiddenPasswordValue =
-    /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g;
+  private forbiddenLoginValue = GlobalConstants.forbiddenLoginValue;
+  private forbiddenPasswordValue = GlobalConstants.forbiddenPassword;
 
   constructor(public authService: AuthService, private router: Router) {}
 
@@ -42,7 +42,7 @@ export class RegistrationComponent implements OnInit {
       return;
     }
 
-    const user: User = this.form.value;
+    const user: IUser = this.form.value;
 
     this.submitted = true;
 

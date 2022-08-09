@@ -1,4 +1,4 @@
-export interface User {
+export interface IUser {
   login?: string;
   email: string;
   password: string;
@@ -6,13 +6,13 @@ export interface User {
 }
 
 export interface ServerResponse {
-  response: String;
+  response: string;
 }
 
 export interface Hero {
   _id: Object;
   name: string;
-  slug: String;
+  slug: string;
   powerstats: powerstatsType;
   appearance: Object;
   biography: Object;
@@ -32,8 +32,8 @@ type powerstatsType = {
 };
 
 type imageType = {
-  xs: String;
-  sm: String;
-  md: String;
-  lg: String;
+  xs: string;
+  sm: string;
+  md: string;
+  lg: string;
 };

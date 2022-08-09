@@ -1,6 +1,7 @@
-import { Document } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 
 export interface HeroesInterface extends Document {
+  _id: ObjectId;
   name: string;
   slug: String;
   powerstats: powerstatsType;
@@ -9,7 +10,6 @@ export interface HeroesInterface extends Document {
   connections: Object;
   id: Number;
   images: imageType;
-
   work: Object;
 }
 

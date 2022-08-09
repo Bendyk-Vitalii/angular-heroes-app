@@ -1,52 +1,80 @@
 <div class="container">
-    <form [formGroup]="form" (ngSubmit)="submit()">
-        <h2>Join</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Join</h2>
 
-        <div class="alert alert-info" *ngIf="message">
-            {{ message }}
-        </div>
+    <div class="alert alert-info" *ngIf="message">
+      {{ message }}
+    </div>
 
-        <div class="form-control">
-            <label for="login">Login:</label>
-            <input type="text" id="login" formControlName="login" placeholder="Please write in camelCase" required />
+    <div class="form-control">
+      <label for="login">Login:</label>
+      <input
+        type="text"
+        id="login"
+        formControlName="login"
+        placeholder="Please write in camelCase"
+        required
+      />
 
-            <div class="validation">
-                <small *ngIf="login?.errors?.['forbiddenValue'] && (form.touched || form.dirty)">
+      <div class="validation">
+        <small
+          *ngIf="login?.errors?.['forbiddenValue'] && (form.touched || form.dirty)"
+        >
           invalid login
         </small>
-            </div>
-        </div>
+      </div>
+    </div>
 
-        <div class="form-control">
-            <label for="email">Email:</label>
-            <input type="email" name="email" ngModel email formControlName="email" placeholder="Email" class="form-control" required />
+    <div class="form-control">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        name="email"
+        formControlName="email"
+        placeholder="Email"
+        class="form-control"
+        required
+      />
 
-            <div class="validation">
-                <small *ngIf="email.touched && email.status === 'INVALID'">
+      <div class="validation">
+        <small *ngIf="email.touched && email.status === 'INVALID'">
           invalid email
         </small>
-            </div>
-        </div>
+      </div>
+    </div>
 
-        <div class="form-control">
-            <label for="password">password:</label>
-            <input type="password" id="password" formControlName="password" placeholder="Password" class="form-control" autocomplete required />
-            <div class="validation">
-                <small *ngIf="password?.errors?.['required'] && (form.touched || form.dirty)">Password is required.
+    <div class="form-control">
+      <label for="password">password:</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        placeholder="Password"
+        class="form-control"
+        autocomplete
+        required
+      />
+      <div class="validation">
+        <small
+          *ngIf="password?.errors?.['required'] && (form.touched || form.dirty)"
+          >Password is required.
         </small>
-                <small *ngIf="password?.errors?.['minlength']">Password should have minimum 6 characters
+        <small *ngIf="password?.errors?.['minlength']"
+          >Password should have minimum 6 characters
         </small>
-                <small *ngIf="password?.errors?.['forbiddenValue'] && (form.touched || form.dirty)">Password should have at least 1 uppercase letter, 1 lowercase letter,
+        <small
+          *ngIf="password?.errors?.['forbiddenValue'] && (form.touched || form.dirty)"
+          >Password should have at least 1 uppercase letter, 1 lowercase letter,
           1 number and at least one of symbols !@#$%^&*
         </small>
-            </div>
-        </div>
+      </div>
+    </div>
 
-        <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
       Join Heroes
     </button>
-        <button type="submit" class="btn btn-primary" routerLink="/login">
+    <button type="submit" class="btn btn-primary" routerLink="/login">
       Sign in
     </button>
-    </form>
+  </form>
 </div>

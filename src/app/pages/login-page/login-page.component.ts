@@ -1,7 +1,9 @@
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import { GlobalConstants } from './../../shared/global-constants';
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
 
 @Component({
@@ -13,10 +15,9 @@ import { forbiddenValueValidator } from 'src/app/shared/custom-validators.direct
 export class LoginPageComponent implements OnInit {
   public form!: FormGroup;
   public message!: string;
-  private forbiddenPassword =
-    /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g;
+  private forbiddenPassword = GlobalConstants.forbiddenPassword;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService) {}
   public ngOnInit(): void {
     this.form = new FormGroup({
       email: new FormControl('', [Validators.required, Validators.email]),
@@ -37,11 +38,7 @@ export class LoginPageComponent implements OnInit {
   }
 
   public submit(): void {
-    this.authService.loginSubmit(
-      this.email.value,
-      this.password.value,
-      this.router
-    );
+    this.authService.loginSubmit(this.email.value, this.password.value);
     this.message = 'Please, write login & password again';
     this.form.reset();
   }

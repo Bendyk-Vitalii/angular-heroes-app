@@ -4,6 +4,7 @@ import { Component, HostBinding, HostListener } from '@angular/core';
   selector: 'app-info-component',
   templateUrl: './info.component.html',
 })
+
 export class InfoContentComponent {
   @HostBinding('class')
   public hostClass = 'hidden';

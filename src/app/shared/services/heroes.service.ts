@@ -1,5 +1,7 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { GlobalConstants } from './../global-constants';
+import { retry, catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Hero } from './../interfaces';
@@ -9,19 +11,21 @@ import { Hero } from './../interfaces';
 })
 export class HeroesService {
   public selectedHeroes$ = new BehaviorSubject<string[]>([]);
-  public actualHeroesSubject = new BehaviorSubject<Hero[]>([]);
-  public actualHeroesData$ = this.actualHeroesSubject.asObservable();
+  public actualHeroes$$ = new BehaviorSubject<Hero[]>([]);
+  public actualHeroesData$ = this.actualHeroes$$.asObservable();
   private previousValue: Array<string> = [];
-  private allHeroesUrl = 'http://localhost:3000/api/heroes/all';
+  private allHeroesUrl = GlobalConstants.allHeroesUrl;
 
   constructor(private http: HttpClient) {}
 
   public getAll(): Observable<Hero[]> {
-    return this.http.get<Hero[]>(this.allHeroesUrl);
+    return this.http
+      .get<Hero[]>(this.allHeroesUrl)
+      .pipe(retry(2), catchError(this.handleError));
   }
 
   public setHeroesData(dataResponse: Hero[]): void {
-    this.actualHeroesSubject.next(dataResponse);
+    this.actualHeroes$$.next(dataResponse);
   }
 
   public addToFavoriteHero(event: Event): void {
@@ -34,5 +38,18 @@ export class HeroesService {
       'selected-heroes',
       JSON.stringify([...this.selectedHeroes$.getValue()])
     );
+  }
+
+  handleError(error: any) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = error.error.message;
+    } else {
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    window.alert(errorMessage);
+    return throwError(() => {
+      return errorMessage;
+    });
   }
 }

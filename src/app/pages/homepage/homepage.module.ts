@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 import { HomepageComponent } from './homepage.component';
 import { AuthGuard } from 'src/app/shared/services/auth/auth.guard';
@@ -46,7 +45,6 @@ const routes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     NgxPaginationModule,
-    Ng2SearchPipeModule,
     RouterModule.forChild(routes),
   ],
   exports: [RouterModule],

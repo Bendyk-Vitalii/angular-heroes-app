@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
+import { GlobalConstants } from 'src/app/shared/global-constants';
 
 import { Hero } from 'src/app/shared/interfaces';
 import { HeroesService } from './../../shared/services/heroes.service';
@@ -11,12 +12,12 @@ import { HeroesService } from './../../shared/services/heroes.service';
 })
 export class InfoPageComponent implements OnInit {
   public selectedHeroes$!: Observable<Hero[]>;
-  public firstBoot!: boolean;
+  public firstBoot: boolean = true;
+  public pageNotFoundUrl = GlobalConstants.pageNotFoundUrl;
   constructor(private heroesService: HeroesService) {}
 
   ngOnInit(): void {
-    this.firstBoot = true;
-    if (!this.heroesService.actualHeroesSubject.getValue().length) {
+    if (!this.heroesService.actualHeroes$$.getValue().length) {
       this.getAllHeroes();
       const heroesIdArray = JSON.parse(
         localStorage.getItem('selected-heroes') || '[]'
@@ -25,7 +26,7 @@ export class InfoPageComponent implements OnInit {
     } else {
       this.getSelectedHeroesData(
         this.heroesService.selectedHeroes$.getValue(),
-        this.heroesService.actualHeroesSubject.getValue()
+        this.heroesService.actualHeroes$$.getValue()
       );
     }
   }
@@ -33,20 +34,22 @@ export class InfoPageComponent implements OnInit {
   private getAllHeroes(): void {
     this.heroesService
       .getAll()
-      .subscribe(
-        (allHeroes) => (
-          this.getSelectedHeroesData(
-            this.heroesService.selectedHeroes$.getValue(),
-            allHeroes
-          ),
-          this.heroesService.setHeroesData(allHeroes)
+      .pipe(
+        switchMap(
+          async (allHeroes) => (
+            this.getSelectedHeroesData(
+              this.heroesService.selectedHeroes$.getValue(),
+              allHeroes
+            ),
+            this.heroesService.setHeroesData(allHeroes)
+          )
         )
       );
   }
 
   private getSelectedHeroesData(
     heroesIdArray: string[] = this.heroesService.selectedHeroes$.getValue(),
-    allHeroesData = this.heroesService.actualHeroesSubject.getValue()
+    allHeroesData = this.heroesService.actualHeroes$$.getValue()
   ) {
     return (this.selectedHeroes$ = of(
       allHeroesData.filter((hero) =>

@@ -1,4 +1,10 @@
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { GlobalConstants } from './../../shared/global-constants';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
@@ -17,33 +23,42 @@ export class HeroSelectionPageComponent implements OnInit {
   public form!: FormGroup;
   public heroes$!: Observable<Hero[]>;
   public alphabetGeneratorResult: Observable<string[]> | undefined;
-  public page: number = 1;
-
+  public page = 1;
+  public pageNotFoundUrl = GlobalConstants.pageNotFoundUrl;
+  private inputSearchByName!: FormControl | AbstractControl | null;
+  private actualHeroes$$ = this.heroesService.actualHeroes$$;
   constructor(public heroesService: HeroesService) {}
 
   public ngOnInit(): void {
-    this.formInit();
-    this.searchByName(this.form.get('searchByName'));
-
+    this.loadScript();
     this.alphabetGeneratorResult = this.alphabetGenerator();
+    this.formInit();
+  }
 
-    if (!this.heroesService.actualHeroesSubject.getValue().length) {
+  private loadScript(): void {
+    if (!this.actualHeroes$$.getValue().length) {
       this.getAllHeroes();
     }
     this.heroes$ = this.heroesService.actualHeroesData$;
   }
 
-  private formInit(): FormGroup {
-    return (this.form = new FormGroup({
+  private formInit(): void {
+    this.form = new FormGroup({
       searchByName: new FormControl('', [
         Validators.required,
         Validators.minLength(1),
         forbiddenValueValidator(/[a-zA-Z]/),
       ]),
-    }));
+    });
   }
 
-  private searchByName(searchForm = this.form.get('searchByName')): void {
+  private getAllHeroes(): void {
+    this.heroesService
+      .getAll()
+      .subscribe((heroes) => this.heroesService.setHeroesData(heroes));
+  }
+
+  private searchByName(searchForm = this.inputSearchByName): void {
     let filteredHeroesArray: Hero[];
     searchForm?.valueChanges.subscribe((filterValue) => {
       if (filterValue === '') {
@@ -56,7 +71,7 @@ export class HeroSelectionPageComponent implements OnInit {
     });
 
     const dataFilter = (valueForSearch: string): void => {
-      filteredHeroesArray = this.heroesService.actualHeroesSubject
+      filteredHeroesArray = this.actualHeroes$$
         .getValue()
         .filter(
           (hero: Hero) =>
@@ -64,12 +79,6 @@ export class HeroSelectionPageComponent implements OnInit {
         );
       this.heroes$ = of(filteredHeroesArray);
     };
-  }
-
-  private getAllHeroes(): void {
-    this.heroesService
-      .getAll()
-      .subscribe((heroes) => this.heroesService.setHeroesData(heroes));
   }
 
   public alphabetGenerator(): Observable<Array<string>> {
@@ -82,21 +91,26 @@ export class HeroSelectionPageComponent implements OnInit {
     );
   }
 
+  public alphabetButtonHandler(event: Event): void {
+    const { innerText } = event.target as HTMLElement;
+    const heroesArray = this.actualHeroes$$.getValue();
+
+    const filteredHeroes$: Observable<Hero[]> = new Observable(
+      function subscribe(subscriber) {
+        subscriber.next(
+          heroesArray.filter((hero) => Array.from(hero.name)[0] == innerText)
+        );
+      }
+    );
+    this.heroes$ = filteredHeroes$;
+  }
+
   public identify(item: Number): Number {
     return item;
   }
 
-  public alphabetButtonHandler(event: Event): void {
-    const { innerText } = event.target as HTMLElement;
-    const heroesArray = this.heroesService.actualHeroesSubject.getValue();
-
-    const filtered: Observable<Hero[]> = new Observable(function subscribe(
-      subscriber
-    ) {
-      subscriber.next(
-        heroesArray.filter((hero) => Array.from(hero.name)[0] == innerText)
-      );
-    });
-    this.heroes$ = filtered;
+  ngAfterViewInit(): void {
+    this.inputSearchByName = this.form.get('searchByName');
+    this.searchByName(this.inputSearchByName);
   }
 }

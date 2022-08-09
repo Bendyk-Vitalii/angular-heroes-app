@@ -1,9 +1,11 @@
 import { Router } from '@angular/router';
 import { Injectable } from '@angular/core';
-import { User } from '../../interfaces';
+
+import { IUser } from '../../interfaces';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  constructor(private router: Router) {}
   get token(): string | null {
     const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
     if (new Date() > expDate) {
@@ -13,21 +15,17 @@ export class AuthService {
     return localStorage.getItem('fb-token');
   }
 
-  loginSubmit(
-    email: String,
-    password: String,
-    router: Router
-  ): void | Promise<boolean> {
+  loginSubmit(email: string, password: string): void | Promise<boolean> {
     const userInfo = JSON.parse(localStorage.getItem('user-data') as string);
     const expDate = new Date(<string>localStorage.getItem('fb-token-exp'));
     const expression =
       userInfo.email === email && userInfo.password === password;
     if (expression) {
-      return router.navigate(['/homepage', 'heroselection']);
+      return this.router.navigate(['/homepage', 'heroselection']);
     }
   }
 
-  register(user: User): void {
+  register(user: IUser): void {
     const expDate = new Date(new Date().getTime() + 25000);
 
     const allCapsAlpha = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
