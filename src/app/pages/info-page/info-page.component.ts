@@ -17,6 +17,10 @@ export class InfoPageComponent implements OnInit {
   constructor(private heroesService: HeroesService) {}
 
   ngOnInit(): void {
+    this.loadScript();
+  }
+
+  private loadScript(): void {
     if (!this.heroesService.actualHeroes$$.getValue().length) {
       this.getAllHeroes();
       const heroesIdArray = JSON.parse(

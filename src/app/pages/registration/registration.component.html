@@ -1,80 +1,95 @@
 <div class="container">
-  <form [formGroup]="form" (ngSubmit)="submit()">
-    <h2>Join</h2>
+  <!-- Sign In Form -->
+  <form class="register" [formGroup]="form" (ngSubmit)="submit()">
+    <h2 class="form-title">Registration</h2>
 
+    <!-- message alert -->
     <div class="alert alert-info" *ngIf="message">
       {{ message }}
     </div>
-
+    <!-- Login Field -->
     <div class="form-control">
       <label for="login">Login:</label>
       <input
         type="text"
-        id="login"
         formControlName="login"
-        placeholder="Please write in camelCase"
-        required
+        placeholder="Please write your name"
       />
 
-      <div class="validation">
-        <small
-          *ngIf="login?.errors?.['forbiddenValue'] && (form.touched || form.dirty)"
-        >
-          invalid login
-        </small>
-      </div>
+      <section class="validation">
+        <p *ngFor="let validation of registrationValidation.login">
+          <small
+            *ngIf="
+              loginInput.hasError(validation.type) &&
+              (loginInput.dirty || loginInput.touched)
+            "
+          >
+            {{ validation.message }}
+          </small>
+        </p>
+      </section>
     </div>
 
+    <!-- Email Field -->
     <div class="form-control">
       <label for="email">Email:</label>
       <input
         type="email"
-        name="email"
         formControlName="email"
         placeholder="Email"
-        class="form-control"
+        autocomplete
         required
       />
 
-      <div class="validation">
-        <small *ngIf="email.touched && email.status === 'INVALID'">
-          invalid email
-        </small>
-      </div>
+      <section class="validation">
+        <p *ngFor="let validation of registrationValidation.email">
+          <small
+            *ngIf="
+              emailInput.hasError(validation.type) &&
+              (emailInput.dirty || emailInput.touched)
+            "
+          >
+            {{ validation.message }}</small
+          >
+        </p>
+      </section>
     </div>
 
+    <!-- Password Field -->
     <div class="form-control">
       <label for="password">password:</label>
       <input
         type="password"
-        id="password"
         formControlName="password"
-        placeholder="Password"
-        class="form-control"
+        placeholder="Password*"
         autocomplete
         required
       />
-      <div class="validation">
-        <small
-          *ngIf="password?.errors?.['required'] && (form.touched || form.dirty)"
-          >Password is required.
-        </small>
-        <small *ngIf="password?.errors?.['minlength']"
-          >Password should have minimum 6 characters
-        </small>
-        <small
-          *ngIf="password?.errors?.['forbiddenValue'] && (form.touched || form.dirty)"
-          >Password should have at least 1 uppercase letter, 1 lowercase letter,
-          1 number and at least one of symbols !@#$%^&*
-        </small>
-      </div>
+      <section class="validation">
+        <p *ngFor="let validation of registrationValidation.password">
+          <small
+            *ngIf="
+              passwordInput.hasError(validation.type) &&
+              (passwordInput.dirty || passwordInput.touched)
+            "
+          >
+            {{ validation.message }}
+          </small>
+        </p>
+      </section>
     </div>
 
-    <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
-      Join Heroes
+    <!-- Submit button -->
+    <button
+      type="submit"
+      class="btn btn-primary"
+      (click)="submit()"
+      [disabled]="form.invalid"
+    >
+      Registration
     </button>
-    <button type="submit" class="btn btn-primary" routerLink="/login">
-      Sign in
-    </button>
+
+    <!-- Transition to Login page button -->
+    <button class="btn btn-primary" routerLink="/login">Sign in</button>
   </form>
 </div>

@@ -1,3 +1,8 @@
 {
-    "allHeroes": "http://localhost:3000/api/heroes/all"
+    "allHeroes": "http://localhost:3000/api/heroes/all",
+    "registration": "http://localhost:3000/api/auth/login",
+    "login": "/api/auth/login",
+    "refresh": "/api/auth/refresh",
+    "user-put": "/api/user/name",
+    "user-get": "/api/user"
 }

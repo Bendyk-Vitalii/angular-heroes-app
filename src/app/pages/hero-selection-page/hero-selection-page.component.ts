@@ -20,13 +20,14 @@ import { HeroesService } from './../../shared/services/heroes.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSelectionPageComponent implements OnInit {
-  public form!: FormGroup;
   public heroes$!: Observable<Hero[]>;
+  private actualHeroes$$ = this.heroesService.actualHeroes$$;
+  public form!: FormGroup;
+  private inputSearchByName!: FormControl | AbstractControl | null;
   public alphabetGeneratorResult: Observable<string[]> | undefined;
   public page = 1;
   public pageNotFoundUrl = GlobalConstants.pageNotFoundUrl;
-  private inputSearchByName!: FormControl | AbstractControl | null;
-  private actualHeroes$$ = this.heroesService.actualHeroes$$;
+
   constructor(public heroesService: HeroesService) {}
 
   public ngOnInit(): void {
@@ -58,27 +59,31 @@ export class HeroSelectionPageComponent implements OnInit {
       .subscribe((heroes) => this.heroesService.setHeroesData(heroes));
   }
 
-  private searchByName(searchForm = this.inputSearchByName): void {
-    let filteredHeroesArray: Hero[];
-    searchForm?.valueChanges.subscribe((filterValue) => {
+  private listenSearchFormChanges(
+    form: FormControl | AbstractControl | null
+  ): void {
+    form!.valueChanges.subscribe((filterValue) => {
       if (filterValue === '') {
         this.heroes$ = this.heroesService.actualHeroesData$;
       }
-      if (searchForm?.status === 'INVALID') {
+      if (form?.status === 'INVALID') {
         return;
       }
-      debounceTime(900), distinctUntilChanged(), dataFilter(filterValue);
+      debounceTime(900),
+        distinctUntilChanged(),
+        this.dataFilterByName(filterValue);
     });
+  }
 
-    const dataFilter = (valueForSearch: string): void => {
-      filteredHeroesArray = this.actualHeroes$$
-        .getValue()
-        .filter(
-          (hero: Hero) =>
-            hero.name.toLowerCase().indexOf(valueForSearch.toLowerCase()) !== -1
-        );
-      this.heroes$ = of(filteredHeroesArray);
-    };
+  private dataFilterByName(valueForSearch: string): void {
+    let filteredHeroesArray: Hero[];
+    filteredHeroesArray = this.actualHeroes$$
+      .getValue()
+      .filter(
+        (hero: Hero) =>
+          hero.name.toLowerCase().indexOf(valueForSearch.toLowerCase()) !== -1
+      );
+    this.heroes$ = of(filteredHeroesArray);
   }
 
   public alphabetGenerator(): Observable<Array<string>> {
@@ -111,6 +116,6 @@ export class HeroSelectionPageComponent implements OnInit {
 
   ngAfterViewInit(): void {
     this.inputSearchByName = this.form.get('searchByName');
-    this.searchByName(this.inputSearchByName);
+    this.listenSearchFormChanges(this.inputSearchByName);
   }
 }
