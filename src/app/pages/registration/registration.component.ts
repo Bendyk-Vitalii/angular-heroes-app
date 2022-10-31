@@ -1,10 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { GlobalConstants } from './../../shared/global-constants';
 import { forbiddenValueValidator } from 'src/app/shared/custom-validators.directive';
-import { IUser } from 'src/app/shared/interfaces';
 import { AuthService } from 'src/app/shared/services/auth/auth.service';
 
 @Component({
@@ -14,26 +13,66 @@ import { AuthService } from 'src/app/shared/services/auth/auth.service';
 })
 export class RegistrationComponent implements OnInit {
   public form!: FormGroup;
-  public submitted = false;
   public message: string | undefined;
+  private isSuccessful = false;
+  private isSignUpFailed = false;
   private forbiddenLoginValue = GlobalConstants.forbiddenLoginValue;
   private forbiddenPasswordValue = GlobalConstants.forbiddenPassword;
 
-  constructor(public authService: AuthService, private router: Router) {}
+  public registrationValidation = {
+    login: [
+      {
+        type: 'forbiddenValue',
+        message: 'invalid login',
+      },
+      {
+        type: 'minlength',
+        message: 'Login should have minimum 8 characters',
+      },
+    ],
+    email: [
+      { type: 'required', message: 'Email is required' },
+      { type: 'email', message: 'Please enter a valid email address' },
+    ],
+    password: [
+      { type: 'required', message: 'Password is required' },
+      {
+        type: 'minlength',
+        message: 'Password must be at least 6 characters long',
+      },
+      {
+        type: 'forbiddenValue',
+        message: `Password should have at least 1 uppercase letter, 1 lowercase letter,
+      1 number and at least one of symbols !@#$%^&*`,
+      },
+    ],
+  };
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private formBuilder: FormBuilder
+  ) {}
 
   public ngOnInit(): void {
-    this.form = new FormGroup({
-      login: new FormControl('', [
-        Validators.minLength(8),
-        Validators.required,
-        forbiddenValueValidator(this.forbiddenLoginValue),
-      ]),
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [
-        Validators.minLength(6),
-        Validators.required,
-        forbiddenValueValidator(this.forbiddenPasswordValue),
-      ]),
+    this.form = this.formBuilder.group({
+      login: [
+        '',
+        [
+          Validators.minLength(8),
+          Validators.required,
+          forbiddenValueValidator(this.forbiddenLoginValue),
+        ],
+      ],
+      email: ['', [Validators.required, Validators.email]],
+      password: [
+        '',
+        [
+          Validators.required,
+          Validators.minLength(6),
+          forbiddenValueValidator(this.forbiddenPasswordValue),
+        ],
+      ],
     });
   }
 
@@ -41,29 +80,33 @@ export class RegistrationComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
-
-    const user: IUser = this.form.value;
-
-    this.submitted = true;
-
-    this.authService.register(user);
-
-    this.router.navigate(['/homepage', 'heroselection']);
-
-    this.submitted = false;
-
+    const { login, email, password } = this.form.value;
+    // const credentials = { ...login, ...email, ...password };
+    console.log(login, email, password);
+    this.authService.register({ email, password, login }).subscribe({
+      next: (data) => {
+        this.message = 'Registration successful';
+        this.isSuccessful = true;
+        this.isSignUpFailed = false;
+        this.router.navigate(['login']);
+      },
+      error: (err) => {
+        this.message = err.message;
+        this.isSignUpFailed = true;
+      },
+    });
     this.form.reset();
   }
 
-  get login() {
+  get loginInput() {
     return this.form.get('login')!;
   }
 
-  get email() {
+  get emailInput() {
     return this.form.get('email')!;
   }
 
-  get password() {
+  get passwordInput() {
     return this.form.get('password')!;
   }
 }

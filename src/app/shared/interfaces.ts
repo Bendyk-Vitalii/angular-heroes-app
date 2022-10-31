@@ -1,8 +1,26 @@
 export interface IUser {
-  login?: string;
+  name: string;
+  password: string;
+  uid?: string;
+  email: string;
+  expirationDate: Date;
+  photoURL?: string;
+  displayName?: string;
+  emailVerified?: boolean;
+}
+
+export interface AuthData {
+  accessToken: string;
+  email?: string;
+  iat: number; //Expiring at timestamp
+  exp: number;
+  id: number;
+}
+
+export interface UserCredentials {
+  login: string;
   email: string;
   password: string;
-  returnSecureToken?: boolean;
 }
 
 export interface ServerResponse {

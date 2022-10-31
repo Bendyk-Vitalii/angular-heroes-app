@@ -5,13 +5,13 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { AlertService } from './shared/services/alert.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { AuthService } from './shared/services/auth/auth.service';
-import { AuthGuard } from './shared/services/auth/auth.guard';
+//import { AuthGuard } from './shared/services/auth/auth.guard';
 import { RegistrationComponent } from './pages/registration/registration.component';
 import { PageNotFoundComponent } from './pages/page-not-found/page-not-found.component';
 import { AlertComponent } from './components/alert/alert.component';
@@ -40,7 +40,7 @@ import { SpinnerInterceptor } from './shared/components/spinner-overlay.intercep
   exports: [RouterModule],
   providers: [
     AuthService,
-    AuthGuard,
+    //AuthGuard,
     AlertService,
     {
       provide: HTTP_INTERCEPTORS,

@@ -5,6 +5,9 @@
     "nestjs",
     "powerstats",
     "SELECTEDHEROES",
-    "texttransform"
+    "sequalize",
+    "texttransform",
+    "typeorm",
+    "Vitalii"
   ]
 }

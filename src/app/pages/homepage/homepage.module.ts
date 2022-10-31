@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 import { HomepageComponent } from './homepage.component';
-import { AuthGuard } from 'src/app/shared/services/auth/auth.guard';
+//import { AuthGuard } from 'src/app/shared/services/auth/auth.guard';
 import { HeroSelectionPageComponent } from '../hero-selection-page/hero-selection-page.component';
 import { CheckNullPipe } from '../../shared/pipes/check-null.pipe';
 import { InfoPageComponent } from '../info-page/info-page.component';
@@ -20,12 +20,12 @@ const routes: Routes = [
       {
         path: 'heroselection',
         component: HeroSelectionPageComponent,
-        canActivateChild: [AuthGuard],
+        // canActivateChild: [AuthGuard],
       },
       {
         path: 'info',
         component: InfoPageComponent,
-        canActivateChild: [AuthGuard],
+        // canActivateChild: [AuthGuard],
       },
     ],
   },
@@ -48,6 +48,6 @@ const routes: Routes = [
     RouterModule.forChild(routes),
   ],
   exports: [RouterModule],
-  providers: [AuthGuard],
+  // providers: [AuthGuard],
 })
 export class HomePageModule {}

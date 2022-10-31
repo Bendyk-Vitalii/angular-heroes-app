@@ -1,39 +1,74 @@
 <div class="container">
-    <form class="card" (ngSubmit)="submit()" [formGroup]="form">
-        <h2>Log in</h2>
+  <!-- Sign In Form -->
+  <form class="login" (ngSubmit)="submit()" [formGroup]="form">
+    <h2 class="form-title">Log in</h2>
 
-        <div class="alert alert-info" *ngIf="message">
-            {{ message }}
-        </div>
+    <!-- message alert -->
+    <div class="alert alert-info" *ngIf="message">
+      {{ message }}
+    </div>
 
-        <div class="form-control">
-            <label for="email">Email:</label>
-            <input type="email" name="email" ngModel email formControlName="email" placeholder="Email" class="form-control" required />
+    <!-- Email Field -->
+    <div class="form-control">
+      <label for="email">Email:</label>
+      <input
+        type="email"
+        formControlName="email"
+        placeholder="Email*"
+        autocomplete
+        required
+      />
+      <section class="validation">
+        <p *ngFor="let validation of signInValidation.email">
+          <small
+            *ngIf="
+              emailInput.hasError(validation.type) &&
+              (emailInput.dirty || emailInput.touched)
+            "
+          >
+            {{ validation.message }}</small
+          >
+        </p>
+      </section>
+    </div>
 
-            <div class="validation">
-                <small *ngIf="email.touched && email.status === 'INVALID'">
-          invalid email
-        </small>
-            </div>
-        </div>
+    <!-- Password Field -->
+    <div class="form-control">
+      <label for="password">password:</label>
+      <input
+        type="password"
+        formControlName="password"
+        placeholder="Password*"
+        autocomplete
+        required
+      />
+      <section class="validation">
+        <p *ngFor="let validation of signInValidation.password">
+          <small
+            *ngIf="
+              passwordInput.hasError(validation.type) &&
+              (passwordInput.dirty || passwordInput.touched)
+            "
+          >
+            {{ validation.message }}
+          </small>
+        </p>
+      </section>
+    </div>
 
-        <div class="form-control">
-            <label for="password">password:</label>
-            <input type="password" id="password" formControlName="password" placeholder="Password" class="form-control" autocomplete required />
-            <div class="validation">
-                <small *ngIf="password?.errors?.['required'] && (form.touched || form.dirty)">Password is required.
-        </small>
-                <small *ngIf="password?.errors?.['minlength']">Password should have minimum 6 characters
-        </small>
-                <small *ngIf="password?.errors?.['forbiddenValue'] && (form.touched || form.dirty)">Password should have at least 1 uppercase letter, 1 lowercase letter,
-          1 number and at least one of symbols !@#$%^&*
-        </small>
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-primary" (click)="submit()" [disabled]="form.invalid">
+    <!-- Submit button -->
+    <button
+      type="submit"
+      class="btn btn-primary"
+      (click)="submit()"
+      [disabled]="form.invalid"
+    >
       sign in
     </button>
-        <button class="btn btn-primary" routerLink="/registration">Join</button>
-    </form>
+
+    <!-- Transition to Registration page button -->
+    <button class="btn btn-primary" routerLink="/registration">
+      Registration
+    </button>
+  </form>
 </div>
