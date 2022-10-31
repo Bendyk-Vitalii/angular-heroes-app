@@ -1,28 +1,15 @@
-import { Component } from '@angular/core';
-import { TokenStorageService } from './shared/services/auth/token-storage.service';
+import { Component, OnInit } from '@angular/core';
+
+import { AuthService } from 'src/app/shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
 })
-export class AppComponent {
-  isLoggedIn = false;
-  username?: string;
-
-  constructor(private tokenStorageService: TokenStorageService) {}
+export class AppComponent implements OnInit {
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.isLoggedIn = !!this.tokenStorageService.getToken();
-
-    if (this.isLoggedIn) {
-      const user = this.tokenStorageService.getUser();
-
-      this.username = user.username;
-    }
-  }
-
-  logout(): void {
-    this.tokenStorageService.signOut();
-    window.location.reload();
+    this.authService.autoLogin();
   }
 }

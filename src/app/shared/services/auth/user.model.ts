@@ -4,7 +4,7 @@ export class UserModel {
     public id: string,
     private _token: string,
     private _tokenExpirationDate: Date,
-    private iat: number
+    private iat?: number
   ) {}
 
   get token() {

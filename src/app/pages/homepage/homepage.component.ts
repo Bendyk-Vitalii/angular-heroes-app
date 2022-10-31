@@ -9,12 +9,8 @@ import { AuthService } from 'src/app/shared/services/auth/auth.service';
 })
 export class HomepageComponent {
   constructor(private router: Router, public authService: AuthService) {}
-
-  // public isAuthenticatedUser = this.authService.isAuthenticated();
-
-  public logout(event: Event) {
+  public logout = (event: Event) => {
     event.preventDefault();
-    // this.authService.logout();
-    this.router.navigate(['login']);
-  }
+    this.authService.logout();
+  };
 }

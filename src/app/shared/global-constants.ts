@@ -1,6 +1,8 @@
 export class GlobalConstants {
   public static allHeroesUrl = 'http://localhost:3000/api/heroes/all';
 
+  public static authApi = 'http://localhost:3000/api/auth/';
+
   public static forbiddenPassword =
     /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{5,}/g;
 

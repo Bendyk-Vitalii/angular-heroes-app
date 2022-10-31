@@ -1,4 +1,3 @@
-import { authInterceptorProviders } from './shared/services/auth/auth.interceptor';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
@@ -6,12 +5,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  JwtHelperService,
-  JwtModuleOptions,
-  JWT_OPTIONS,
-} from '@auth0/angular-jwt';
-
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { AlertService } from './shared/services/alert.service';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -46,10 +40,7 @@ import { SpinnerInterceptor } from './shared/components/spinner-overlay.intercep
   exports: [RouterModule],
   providers: [
     AuthService,
-    // AuthGuard,
-    authInterceptorProviders,
-    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
-    JwtHelperService,
+    //AuthGuard,
     AlertService,
     {
       provide: HTTP_INTERCEPTORS,
